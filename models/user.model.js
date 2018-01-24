@@ -116,6 +116,7 @@ userSchema.statics = {
    * @returns {Promise<User, APIError>}
    */
   async get(id) {
+    console.log('id: %s', id);
     try {
       let user;
 

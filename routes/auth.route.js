@@ -95,5 +95,4 @@ router.route('/login')
 router.route('/refresh-token')
   .post(validate(refresh), controller.refresh);
 
-
 module.exports = router;

@@ -103,3 +103,9 @@ exports.remove = (req, res, next) => {
     .then(() => res.status(httpStatus.NO_CONTENT).end())
     .catch(e => next(e));
 };
+
+exports.protected = (req,res,next) => {
+  console.log('protected!')
+  res.status(200);
+  res.json({ hello: "hello" });
+};

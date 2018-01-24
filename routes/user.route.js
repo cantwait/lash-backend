@@ -16,6 +16,12 @@ const router = express.Router()
  */
 router.param('userId', controller.load);
 
+router
+  .route('/protected')
+  /**
+   * @api {get} /api/v1/user/protected
+   */
+  .get(authorize(LOGGED_USER),controller.protected);
 
 router
   .route('/')
@@ -67,7 +73,6 @@ router
    * @apiError (Forbidden 403)     Forbidden        Only admins can create the data
    */
   .post(authorize(ADMIN), validate(createUser), controller.create);
-
 
 router
   .route('/profile')
