@@ -6,7 +6,8 @@ const moment = require('moment-timezone');
 const jwt = require('jsonwebtoken');
 const uuidv4 = require('uuid-v4');
 const APIError = require('../utils/api.error');
-const { env, jwtSecret, jwtExpirationInterval } = require('../config/vars');
+const { env, jwtSecret, jwtExpirationInterval, privateKey, passphrase } = require('../config/vars');
+const fs = require('fs');
 
 /**
 * User Roles
@@ -93,7 +94,7 @@ userSchema.method({
       iat: moment().unix(),
       sub: this._id,
     };
-    return jwt.encode(playload, jwtSecret);
+    return jwt.sign(playload, { key: fs.readFileSync(privateKey)  },{ algorithm: 'RS256' });
   },
 
   async passwordMatches(password) {

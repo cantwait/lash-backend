@@ -1,6 +1,11 @@
 const httpStatus = require('http-status');
 const User = require('../models/user.model');
 const APIError = require('../utils/api.error');
+const jwt = require('express-jwt');
+const { publicKey, passphrase } = require('../config/vars');
+const fs = require('fs');
+const passport = require('passport');
+const JwtStrategy = require('passport-jwt').Strategy;
 
 const ADMIN = 'admin';
 const LOGGED_USER = '_loggedUser';
@@ -20,7 +25,7 @@ const handleJWT = (req, res, next, roles) => async (err, user, info) => {
   } catch (e) {
     return next(apiError);
   }
-
+console.log(user)
   if (roles === LOGGED_USER) {
     if (user.role !== 'admin' && req.params.userId !== user._id.toString()) {
       apiError.status = httpStatus.FORBIDDEN;
@@ -43,11 +48,9 @@ const handleJWT = (req, res, next, roles) => async (err, user, info) => {
 exports.ADMIN = ADMIN;
 exports.LOGGED_USER = LOGGED_USER;
 
-exports.authorize = (roles = User.roles) => (req, res, next) => {}
-//   passport.authenticate(
-//     'jwt', { session: false },
-//     handleJWT(req, res, next, roles),
-//   )(req, res, next);
-
-// exports.oAuth = service =>
-//   passport.authenticate(service, { session: false });
+exports.authorize = (roles = User.roles) => (req, res, next) => {
+    passport.authenticate(
+      'jwt', { session: false },
+      handleJWT(req, res, next, roles),
+    )(req, res, next);
+}
