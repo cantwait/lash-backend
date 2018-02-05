@@ -8,6 +8,7 @@ const uuidv4 = require('uuid-v4');
 const APIError = require('../utils/api.error');
 const { env, jwtSecret, jwtExpirationInterval, privateKey, passphrase } = require('../config/vars');
 const fs = require('fs');
+const mongoosePaginate = require('mongoose-paginate');
 
 /**
 * User Roles
@@ -51,6 +52,8 @@ const userSchema = new mongoose.Schema({
 }, {
   timestamps: true,
 });
+
+userSchema.plugin(mongoosePaginate);
 
 /**
  * Add your
