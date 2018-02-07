@@ -33,9 +33,11 @@
     "mongoose-relationships": "^0.4.0",
     "morgan": "^1.9.0",
     "nodeenv": "^0.3.1",
+    "nodemailer": "^4.4.2",
     "passport": "^0.4.0",
     "passport-http-bearer": "^1.0.1",
     "passport-jwt": "^3.0.1",
+    "smtp-server": "^3.4.1",
     "uuid-v4": "^0.1.0",
     "ws": "^3.3.3"
   }

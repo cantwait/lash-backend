@@ -19,5 +19,14 @@ module.exports = {
   logs: process.env.NODE_ENV === 'production' ? 'combined' : 'dev',
   privateKey: process.env.PRIVATE_KEY,
   publicKey: process.env.PUBLIC_KEY,
-  passphrase: process.env.KEY_PASSPHRASE
+  passphrase: process.env.KEY_PASSPHRASE,
+  emailFrom: process.env.EMAIL_FROM,
+  emailSubject: process.env.EMAIL_SUBJECT,
+  emailHtml: process.env.EMAIL_HTML,
+  emailHost: process.env.EMAIL_HOST,
+  emailPort: process.env.EMAIL_PORT,
+  emailIsSsl: process.env.EMAIL_SSL,
+  emailUser: process.env.EMAIL_USER,
+  emailPass: process.env.EMAIL_PASS,
+  emailRejecAuth: process.env.EMAIL_REJECT_AUTH,
 };

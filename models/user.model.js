@@ -9,6 +9,7 @@ const APIError = require('../utils/api.error');
 const { env, jwtSecret, jwtExpirationInterval, privateKey, passphrase } = require('../config/vars');
 const fs = require('fs');
 const mongoosePaginate = require('mongoose-paginate');
+const mailClient = require('../utils/mail');
 
 /**
 * User Roles
@@ -30,8 +31,8 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true,
-    minlength: 6,
+    //required: false,
+    //minlength: 6,
     maxlength: 128,
   },
   name: {
@@ -63,10 +64,10 @@ userSchema.plugin(mongoosePaginate);
  */
 userSchema.pre('save', async function save(next) {
   try {
-    if (!this.isModified('password')) return next();
-
+    //if (!this.isModified('password')) return next();
+    console.log('users pre save hook...')
     const rounds = env === 'test' ? 1 : 10;
-
+    const tempPass = this.password;
     const hash = await bcrypt.hash(this.password, rounds);
     this.password = hash;
 
@@ -74,6 +75,10 @@ userSchema.pre('save', async function save(next) {
   } catch (error) {
     return next(error);
   }
+  const body = `
+    <p>Bienvenido a lalalash su password es: <strong>${tempPass}</strong> </p>
+  `;
+  mailClient.send(this.email,body,true);
 });
 
 /**
