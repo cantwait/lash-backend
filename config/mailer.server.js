@@ -1,11 +1,12 @@
 const SMTPServer = require('smtp-server').SMTPServer;
+const yn = require('yn');
 const { env, emailIsSsl,emailUser,emailPass,emailPort } = require('../config/vars');
 
 module.exports.start = function() {
     if(env === 'development'){
         console.log('starting smtp server');
         const server = new SMTPServer({
-            secure: emailIsSsl,
+            secure: yn(emailIsSsl),
             maxClients: 1,
             name: 'Dummy SMTP Server',
             onAuth(auth, session, callback){

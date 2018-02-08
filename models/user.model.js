@@ -5,8 +5,13 @@ const bcrypt = require('bcryptjs');
 const moment = require('moment-timezone');
 const jwt = require('jsonwebtoken');
 const uuidv4 = require('uuid-v4');
+const randomstring = require("randomstring");
 const APIError = require('../utils/api.error');
-const { env, jwtSecret, jwtExpirationInterval, privateKey, passphrase } = require('../config/vars');
+const { env, 
+        jwtSecret, 
+        jwtExpirationInterval, 
+        privateKey, 
+        passphrase } = require('../config/vars');
 const fs = require('fs');
 const mongoosePaginate = require('mongoose-paginate');
 const mailClient = require('../utils/mail');
@@ -66,19 +71,15 @@ userSchema.pre('save', async function save(next) {
   try {
     //if (!this.isModified('password')) return next();
     console.log('users pre save hook...')
-    const rounds = env === 'test' ? 1 : 10;
-    const tempPass = this.password;
-    const hash = await bcrypt.hash(this.password, rounds);
-    this.password = hash;
-
+    const rounds = env === 'dev' ? 1 : 10;    
+    const pass =  randomstring.generate(10);    
+    const hash = await bcrypt.hash(pass, rounds);
+    this.password = hash;   
+    mailClient.sendPassword(this.email, pass);
     return next();
   } catch (error) {
     return next(error);
-  }
-  const body = `
-    <p>Bienvenido a lalalash su password es: <strong>${tempPass}</strong> </p>
-  `;
-  mailClient.send(this.email,body,true);
+  }  
 });
 
 /**

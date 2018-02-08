@@ -29,4 +29,5 @@ module.exports = {
   emailUser: process.env.EMAIL_USER,
   emailPass: process.env.EMAIL_PASS,
   emailRejecAuth: process.env.EMAIL_REJECT_AUTH,
+  pass: process.env.PASS,
 };

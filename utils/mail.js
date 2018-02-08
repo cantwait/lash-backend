@@ -1,5 +1,7 @@
 'use strict';
 const nodemailer = require('nodemailer');
+const yn = require('yn');
+const _ = require('lodash');
 const { emailFrom,
         emailSubject, 
         emailText, 
@@ -11,28 +13,47 @@ const { emailFrom,
         emailPass,
         emailRejecAuth } = require('../config/vars');
 
-module.exports.send =  function(to, body, isHtml, options) {
+module.exports.sendPassword = function(email, pass) {
+    const body = `
+        <p>Bienvenido a lalalash su password es: <strong>${pass}</strong></p>
+    `;
+    const subject = 'Contraseña de Usuario';
+    this.send(email,subject,body,true);
+}
+
+module.exports.send =  function(to, subject, body, isHtml, options) {
     // create reusable transporter object using the default SMTP transport
-    const transporter = nodemailer.createTransport({
+    const transPortOpts = {
         host: emailHost,
         port: emailPort,
-        secure: emailIsSsl, // true for 465, false for other ports
-        auth: {
-            user: emailUser, // generated ethereal user
-            pass: emailPass  // generated ethereal password
-        },
         tls: {
-            rejectUnauthorized: emailRejecAuth
+            rejectUnauthorized: yn(emailRejecAuth)
         }
-    });
+    };
+
+    if(yn(emailIsSsl)){
+        transPortOpts["secure"] = yn(emailIsSsl);
+    }
+
+    if(emailUser && emailPass){
+        const user = {
+            auth: {
+                user: emailUser,
+                pass: emailPass
+            }
+        };
+        _.assign(transPortOpts, user);
+    }    
+
+    const transporter = nodemailer.createTransport(transPortOpts);
 
     // setup email data with unicode symbols
     let mailOptions = {
-        from: options.from || emailFrom, // sender address
-        to: options.to, // list of receivers
-        subject: options.subject || emailSubject, // Subject line
-        text: isHtml ? '' : options.text, // plain text body
-        html: isHtml ? options.html : ''// html body
+        from: emailFrom || options.from, // sender address
+        to: to, // list of receivers
+        subject: subject || emailSubject, // Subject line
+        text: yn(isHtml) ? '' : body, // plain text body
+        html: yn(isHtml) ? body : ''// html body
     };
 
     // send mail with defined transport object
