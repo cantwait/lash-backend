@@ -69,13 +69,20 @@ exports.replace = async (req, res, next) => {
  * @public
  */
 exports.update = (req, res, next) => {
-  const ommitRole = req.locals.user.role !== 'admin' ? 'role' : '';
-  const updatedUser = omit(req.body, ommitRole);
-  const user = Object.assign(req.locals.user, updatedUser);
-
-  user.save()
-    .then(savedUser => res.json(savedUser.transform()))
-    .catch(e => next(User.checkDuplicateEmail(e)));
+  //const ommitRole = req.locals.user.role !== 'admin' ? 'role' : '';
+  //const updatedUser = omit(req.body, ommitRole);
+  //const user = Object.assign(req.locals.user, req.body)
+  console.log(req.params);
+	const query = { "_id": req.params.userId};
+	const update = { name: req.body.name, email: req.body.email, role: req.body.role };
+	const options = {new: true};
+	User.findOneAndUpdate(query,update,options,(err,newUser)=>{
+   if(err) return next(User.checkDuplicatedEmail(err));
+   res.json(newUser.transform());
+});
+  //user.save()
+    //.then(savedUser => res.json(savedUser.transform()))
+    //.catch(e => next(User.checkDuplicateEmail(e)));
 };
 
 /**

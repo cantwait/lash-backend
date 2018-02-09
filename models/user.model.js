@@ -70,7 +70,7 @@ userSchema.plugin(mongoosePaginate);
 userSchema.pre('save', async function save(next) {
   try {
     //if (!this.isModified('password')) return next();
-    console.log('users pre save hook...')
+    console.log('users pre save hook... %s, %s, %s', this.email, this.name, this.role);
     const rounds = env === 'dev' ? 1 : 10;    
     const pass =  randomstring.generate(10);    
     const hash = await bcrypt.hash(pass, rounds);
