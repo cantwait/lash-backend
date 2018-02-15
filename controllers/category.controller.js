@@ -49,7 +49,7 @@ exports.create = async (req, res, next) => {
     res.status(httpStatus.CREATED);
     res.json(savedCat.transform());
   } catch (error) {
-    next(User.checkDuplicateEmail(error));
+    next(Category.checkDuplicateEmail(error));
   }
 };
 
@@ -59,11 +59,11 @@ exports.create = async (req, res, next) => {
  */
 exports.update = (req, res, next) => {
   console.log(req.params);
-	const query = { "_id": req.params.userId};
+	const query = { "_id": req.params.catId};
 	const update = { name: req.body.name };
 	const options = { new: true };
 	Category.findOneAndUpdate(query,update,options,(err,newCat)=>{
-   if(err) return next(User.checkDuplicatedEmail(err));
+   if(err) return next(Category.checkDuplicatedEmail(err));
    res.json(newCat.transform());
   });
 };

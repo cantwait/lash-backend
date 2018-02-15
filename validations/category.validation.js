@@ -15,14 +15,14 @@ module.exports = {
   // POST /api/v1/categories
   createCategory: {
     body: {
-      name: Joi.string().max(128),
+      name: Joi.string().min(3).max(128).required(),
     },
   },
 
   // PUT /api/v1/categories/:catId
   replaceCategory: {
     body: {
-      name: Joi.string().max(128),
+      name: Joi.string().min(3).max(128).required(),
     },
     params: {
       catId: Joi.string().regex(/^[a-fA-F0-9]{24}$/).required(),

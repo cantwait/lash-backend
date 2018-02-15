@@ -48,38 +48,40 @@ router
    *
    * @apiHeader {String} Athorization  User's access token
    *
-   * @apiParam  {String}             email     User's email
-   * @apiParam  {String{6..128}}     password  User's password
-   * @apiParam  {String{..128}}      [name]    User's name
-   * @apiParam  {String=user,admin}  [role]    User's role
    *
-   * @apiSuccess (Created 201) {String}  id         User's id
-   * @apiSuccess (Created 201) {String}  name       User's name
-   * @apiSuccess (Created 201) {String}  email      User's email
-   * @apiSuccess (Created 201) {String}  role       User's role
-   * @apiSuccess (Created 201) {Date}    createdAt  Timestamp
+   * @apiSuccess (Created 201) {String}  id             Product's id
+   * @apiSuccess (Created 201) {String}  name           Product's name
+   * @apiSuccess (Created 201) {String}  description    Product's description
+   * @apiSuccess (Created 201) {String}  category       Product's category
+   * @apiSuccess (Created 201) {Array}   pictures       Product's pictures
+   * @apiSuccess (Created 201) {Float}   price          Product's price
+   * @apiSuccess (Created 201) {Date}    createdAt      Timestamp
    *
    * @apiError (Bad Request 400)   ValidationError  Some parameters may contain invalid values
    * @apiError (Unauthorized 401)  Unauthorized     Only authenticated users can create the data
    * @apiError (Forbidden 403)     Forbidden        Only admins can create the data
    */
-  .post(authorize(ADMIN), validate(createCategory), controller.create);
+  .post(authorize(ADMIN), validate(createProduct), controller.create);
 
 router
-  .route('/:catId')
+  .route('/:pId')
   /**
-   * @api {get} v1/categories/:id Get Category
-   * @apiDescription Get user information
+   * @api {get} v1/products/:pId Get Product
+   * @apiDescription Get Product information
    * @apiVersion 1.0.0
-   * @apiName GetCategry
-   * @apiGroup Category
+   * @apiName GetProduct
+   * @apiGroup Product
    * @apiPermission user
    *
    * @apiHeader {String} Athorization  User's access token
    *
-   * @apiSuccess {String}  id         User's id
-   * @apiSuccess {String}  name       User's name
-   * @apiSuccess {Date}    createdAt  Timestamp
+   * @apiSuccess {String}  id             Product's id
+   * @apiSuccess {String}  name           Product's name
+   * @apiSuccess {String}  description    Product's description
+   * @apiSuccess {String}  category       Product's category
+   * @apiSuccess {Array}   pictures       Product's pictures
+   * @apiSuccess {Float}   price          Product's price
+   * @apiSuccess {Date}    createdAt      Timestamp
    *
    * @apiError (Unauthorized 401) Unauthorized Only authenticated users can access the data
    * @apiError (Forbidden 403)    Forbidden    Only user with same id or admins can access the data
@@ -87,58 +89,39 @@ router
    */
   .get(authorize(LOGGED_USER), controller.get)
   /**
-   * @api {put} v1/categories/:id Replace Category
-   * @apiDescription Replace the whole user document with a new one
+   * @api {patch} v1/products/:pId Update Product
+   * @apiDescription Update some fields of a product document
    * @apiVersion 1.0.0
-   * @apiName ReplaceCategory
-   * @apiGroup Category
-   * @apiPermission categorh
-   *
-   * @apiHeader {String} Athorization  User's access token
-   *
-   * @apiParam  {String{..128}}      [name]    Category's name
-   * (You must be an admin to change the user's role)
-   *
-   * @apiSuccess {String}  id         Category's id
-   * @apiSuccess {String}  name       Category's name
-   * @apiSuccess {Date}    createdAt  Timestamp
-   *
-   * @apiError (Bad Request 400)  ValidationError  Some parameters may contain invalid values
-   * @apiError (Unauthorized 401) Unauthorized Only authenticated users can modify the data
-   * @apiError (Forbidden 403)    Forbidden    Only user with same id or admins can modify the data
-   * @apiError (Not Found 404)    NotFound     User does not exist
-   */
-  .put(authorize(LOGGED_USER), validate(replaceCategory), controller.replace)
-  /**
-   * @api {patch} v1/categories/:id Update Category
-   * @apiDescription Update some fields of a category document
-   * @apiVersion 1.0.0
-   * @apiName UpdateCategory
-   * @apiGroup Category
-   * @apiPermission category
+   * @apiName UpdateProduct
+   * @apiGroup Product
+   * @apiPermission product
    *
    * @apiHeader {String} Athorization  User's access token
    *
    * @apiParam  {String{..128}}      [name]    User's name
    * (You must be an admin to change the user's role)
    *
-   * @apiSuccess {String}  id         User's id
-   * @apiSuccess {String}  name       User's name
-   * @apiSuccess {Date}    createdAt  Timestamp
+   * @apiSuccess {String}  id             Product's id
+   * @apiSuccess {String}  name           Product's name
+   * @apiSuccess {String}  description    Product's description
+   * @apiSuccess {String}  category       Product's category
+   * @apiSuccess {Array}   pictures       Product's pictures
+   * @apiSuccess {Float}   price          Product's price
+   * @apiSuccess {Date}    createdAt      Timestamp
    *
    * @apiError (Bad Request 400)  ValidationError  Some parameters may contain invalid values
    * @apiError (Unauthorized 401) Unauthorized Only authenticated users can modify the data
    * @apiError (Forbidden 403)    Forbidden    Only user with same id or admins can modify the data
    * @apiError (Not Found 404)    NotFound     User does not exist
    */
-  .patch(authorize(LOGGED_USER), validate(updateCategory), controller.update)
+  .patch(authorize(LOGGED_USER), validate(updateProduct), controller.update)
   /**
-   * @api {patch} v1/categories/:id Delete Category
-   * @apiDescription Delete a user
+   * @api {patch} v1/products/:pId Delete Product
+   * @apiDescription Delete a PRoduct
    * @apiVersion 1.0.0
-   * @apiName DeleteCategory
-   * @apiGroup Category
-   * @apiPermission category
+   * @apiName DeleteProduct
+   * @apiGroup Product
+   * @apiPermission product
    *
    * @apiHeader {String} Athorization  User's access token
    *
