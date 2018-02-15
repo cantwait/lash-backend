@@ -7,10 +7,10 @@ const jwt = require('jsonwebtoken');
 const uuidv4 = require('uuid-v4');
 const randomstring = require("randomstring");
 const APIError = require('../utils/api.error');
-const { env, 
-        jwtSecret, 
-        jwtExpirationInterval, 
-        privateKey, 
+const { env,
+        jwtSecret,
+        jwtExpirationInterval,
+        privateKey,
         passphrase } = require('../config/vars');
 const fs = require('fs');
 const mongoosePaginate = require('mongoose-paginate');
@@ -71,15 +71,15 @@ userSchema.pre('save', async function save(next) {
   try {
     //if (!this.isModified('password')) return next();
     console.log('users pre save hook... %s, %s, %s', this.email, this.name, this.role);
-    const rounds = env === 'dev' ? 1 : 10;    
-    const pass =  randomstring.generate(10);    
+    const rounds = env === 'dev' ? 1 : 10;
+    const pass =  randomstring.generate(10);
     const hash = await bcrypt.hash(pass, rounds);
-    this.password = hash;   
+    this.password = hash;
     mailClient.sendPassword(this.email, pass);
     return next();
   } catch (error) {
     return next(error);
-  }  
+  }
 });
 
 /**
