@@ -3,13 +3,13 @@ const nodemailer = require('nodemailer');
 const yn = require('yn');
 const _ = require('lodash');
 const { emailFrom,
-        emailSubject, 
-        emailText, 
-        emailHtml, 
-        emailHost, 
-        emailPort, 
-        emailIsSsl, 
-        emailUser, 
+        emailSubject,
+        emailText,
+        emailHtml,
+        emailHost,
+        emailPort,
+        emailIsSsl,
+        emailUser,
         emailPass,
         emailRejecAuth } = require('../config/vars');
 
@@ -43,7 +43,7 @@ module.exports.send =  function(to, subject, body, isHtml, options) {
             }
         };
         _.assign(transPortOpts, user);
-    }    
+    }
 
     const transporter = nodemailer.createTransport(transPortOpts);
 

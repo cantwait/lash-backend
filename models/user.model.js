@@ -15,6 +15,7 @@ const { env,
 const fs = require('fs');
 const mongoosePaginate = require('mongoose-paginate');
 const mailClient = require('../utils/mail');
+const cloudinaryUtil = require('../utils/cloudinary.client');
 
 /**
 * User Roles
@@ -70,11 +71,12 @@ userSchema.plugin(mongoosePaginate);
 userSchema.pre('save', async function save(next) {
   try {
     //if (!this.isModified('password')) return next();
-    console.log('users pre save hook... %s, %s, %s', this.email, this.name, this.role);
+    console.log('users pre save hook!...');
     const rounds = env === 'dev' ? 1 : 10;
     const pass =  randomstring.generate(10);
     const hash = await bcrypt.hash(pass, rounds);
     this.password = hash;
+    this.picture =  await cloudinaryUtil.processBase64Object(this.picture);
     mailClient.sendPassword(this.email, pass);
     return next();
   } catch (error) {

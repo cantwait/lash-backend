@@ -5,6 +5,7 @@ const moment = require('moment-timezone');
 const Float = require('mongoose-float').loadType(mongoose, 3);
 const fs = require('fs');
 const APIError = require('../utils/api.error');
+const cloudifyUtil = require('../utils/cloudinary.client');
 
 /**
  * Product Schema
@@ -34,6 +35,10 @@ const productSchema = new mongoose.Schema({
     type: Float,
     min: 0,
   },
+  specs: {
+    type: String,
+    trim: true
+  },
 }, {
   timestamps: true,
 });
@@ -47,7 +52,20 @@ const productSchema = new mongoose.Schema({
 productSchema.pre('save', async function save(next) {
   try {
     console.log('Pre Save Product hook!...');
+    this.pictures = await cloudifyUtil.processBase64(this.pictures);
     return next();
+  } catch (error) {
+    return next(error);
+  }
+});
+
+/**
+* pre-update hooks
+*/
+productSchema.pre('findOneAndUpdate', async function update(next) {
+  try {
+    console.log('Pre Update Product hook!...');
+    this._update.$set.pictures = await cloudifyUtil.processBase64(this.pictures);
   } catch (error) {
     return next(error);
   }

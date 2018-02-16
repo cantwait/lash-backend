@@ -30,4 +30,7 @@ module.exports = {
   emailPass: process.env.EMAIL_PASS,
   emailRejecAuth: process.env.EMAIL_REJECT_AUTH,
   pass: process.env.PASS,
+  cloudinaryName: process.env.CLOUDINARY_NAME,
+  cloudinaryKey: process.env.CLOUDINARY_KEY,
+  cloudinarySecret: process.env.CLOUDINARY_SECRET,
 };

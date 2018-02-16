@@ -19,7 +19,8 @@ module.exports = {
       description: Joi.string().min(5).max(500).required(),
       price: Joi.number().positive().required(),
       pictures: Joi.array(),
-      category: Joi.isRef('Category')
+      category: Joi.isRef('Category'),
+      specs: Joi.string().min(0).max(500),
     },
   },
 
@@ -30,7 +31,8 @@ module.exports = {
       description: Joi.string().min(5).max(500).required(),
       price: Joi.number().positive().required(),
       pictures: Joi.array(),
-      category: Joi.isRef('Category')
+      category: Joi.isRef('Category'),
+      specs: Joi.string().min(0).max(500),
     },
     params: {
       catId: Joi.string().regex(/^[a-fA-F0-9]{24}$/).required(),
@@ -44,7 +46,8 @@ module.exports = {
       description: Joi.string().min(5).max(500).required(),
       price: Joi.number().positive().required(),
       pictures: Joi.array(),
-      category: Joi.isRef('Category')
+      category: Joi.isRef('Category'),
+      specs: Joi.string().min(0).max(500),
     },
     params: {
       catId: Joi.string().regex(/^[a-fA-F0-9]{24}$/).required(),

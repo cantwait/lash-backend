@@ -19,9 +19,9 @@ const commentSchema = new mongoose.Schema({
   user: {
     type: User
   },
-  product: {
+  uId: {
     type: mongoose.SchemaType.ObjectId,
-    ref: 'Product'
+    ref: 'User'
   }
 }, {
   timestamps: true,

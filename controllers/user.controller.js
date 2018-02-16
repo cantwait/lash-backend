@@ -2,6 +2,7 @@ const httpStatus = require('http-status');
 const { omit } = require('lodash');
 const User = require('../models/user.model');
 const { handler: errorHandler } = require('../middlewares/error');
+const cloudinaryUtil = require('../utils/cloudinary.client');
 
 /**
  * Load user and append to req.
@@ -68,16 +69,20 @@ exports.replace = async (req, res, next) => {
  * Update existing user
  * @public
  */
-exports.update = (req, res, next) => {
+exports.update = async (req, res, next) => {
   //const ommitRole = req.locals.user.role !== 'admin' ? 'role' : '';
   //const updatedUser = omit(req.body, ommitRole);
   //const user = Object.assign(req.locals.user, req.body)
   console.log(req.params);
-	const query = { "_id": req.params.userId};
-	const update = { name: req.body.name, email: req.body.email, role: req.body.role };
+  const query = { "_id": req.params.userId};
+  const picture = await cloudinaryUtil.processBase64Object(req.body.picture);
+  const update = { name: req.body.name, email: req.body.email, role: req.body.role };
+  if(picture) {
+    update['picture'] = picture;
+  }
 	const options = {new: true};
 	User.findOneAndUpdate(query,update,options,(err,newUser)=>{
-   if(err) return next(User.checkDuplicatedEmail(err));
+   if(err) return next(err);
    res.json(newUser.transform());
 });
   //user.save()
