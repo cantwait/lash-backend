@@ -1,7 +1,7 @@
-samheutmaker1/Example-Node:
+cantwait/lash-backend:
   # Distelli Manifest example
   # this example assumes the build and deploy servers are:
-  # Ubuntu 14.04
+  # Ubuntu 16.04
 
   PreRelease:
     - echo "---Beginning PreRelease---"
