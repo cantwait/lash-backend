@@ -26,10 +26,10 @@ cantwait/lash-backend:
 
   PostInstall:
     - echo "Begin PostInstall"
-    - npm install
+    - /home/ubuntu/.nvm/versions/node/v8.9.4/bin/npm install
 
   Env:
     - PORT: 3000
 
   Exec:
-    - nodejs app.js
+    - /home/ubuntu/.nvm/versions/node/v8.9.4/bin/node app.js
