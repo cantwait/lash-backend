@@ -32,4 +32,4 @@ cantwait/lash-backend:
     - PORT: 3000
 
   Exec:
-    - /usr/bin/nodejs app.js
+    - nodejs app.js
