@@ -1,13 +1,17 @@
 cantwait/lash-backend:
   # Distelli Manifest example
   # this example assumes the build and deploy servers are:
-  # Ubuntu 16.04
+  # Ubuntu 14.04
 
   PreRelease:
     - echo "---Beginning PreRelease---"
     - echo "--Installing build dependencies--"
     - echo "-Updating apt-get-"
     - sudo apt-get -y update
+    - echo "-Installing nodejs-"
+    - sudo apt-get -y install nodejs
+    - echo "-Installing npm-"
+    - sudo apt-get -y install npm
     - echo "--Building--"
     - npm install
     - echo "--Testing--"
@@ -21,7 +25,13 @@ cantwait/lash-backend:
 
   PreInstall:
     - echo "---Begining PreInstall---"
-
+    - echo "--Installing deploy dependencies--"
+    - echo "-Updating apt-get-"
+    - sudo apt-get -y update
+    - echo "-Installing nodejs-"
+    - sudo apt-get -y install nodejs
+    - echo "-Installing npm-"
+    - sudo apt-get -y install npm
 
   PostInstall:
     - echo "Begin PostInstall"
@@ -31,4 +41,4 @@ cantwait/lash-backend:
     - PORT: 3000
 
   Exec:
-    - node app.js
+    - /usr/bin/nodejs app.js
