@@ -3,20 +3,6 @@ cantwait/lash-backend:
   # this example assumes the build and deploy servers are:
   # Ubuntu 14.04
 
-  PreRelease:
-    - echo "---Beginning PreRelease---"
-    - echo "--Installing build dependencies--"
-    - echo "-Updating apt-get-"
-    - sudo apt-get -y update
-    - echo "-Installing nodejs-"
-    - sudo apt-get -y install nodejs
-    - echo "-Installing npm-"
-    - sudo apt-get -y install npm
-    - echo "--Building--"
-    - npm install
-    - echo "--Testing--"
-    - npm test
-
   PkgInclude:
     - '*'
 
@@ -41,4 +27,4 @@ cantwait/lash-backend:
     - PORT: "3000"
 
   Exec:
-    - ~/.nvm/versions/node/v8.9.4/bin/node app.js
+    - ~/.nvm/versions/node/v8.9.4/bin/node app.js & ./lash.log
