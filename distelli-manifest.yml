@@ -21,15 +21,13 @@ cantwait/lash-backend:
 
   PreInstall:
     - echo "---Begining PreInstall---"
-    - echo "--Installing deploy dependencies--"
-    - sudo apt-get -y update
+
 
   PostInstall:
     - echo "Begin PostInstall"
-    - /home/ubuntu/.nvm/versions/node/v8.9.4/bin/npm install
 
   Env:
     - PORT: 3000
 
   Exec:
-    - /home/ubuntu/.nvm/versions/node/v8.9.4/bin/node app.js
+    - nodejs app.js
