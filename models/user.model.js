@@ -56,6 +56,13 @@ const userSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
+  fee: {
+    type: Number,
+  },
+  active: {
+    type: Boolean,
+    default: true,
+  }
 }, {
   timestamps: true,
 });
@@ -84,13 +91,21 @@ userSchema.pre('save', async function save(next) {
   }
 });
 
+userSchema.post('update', async (next) => {
+  try {
+    this._update.$set.updateAt = moment.now();
+  } catch (error) {
+    return next(error);
+  }
+});
+
 /**
  * Methods
  */
 userSchema.method({
   transform() {
     const transformed = {};
-    const fields = ['id', 'name', 'email', 'picture', 'role', 'createdAt'];
+    const fields = ['id', 'name', 'email', 'picture', 'role', 'fee', 'active', 'createdAt', 'updatedAt'];
 
     fields.forEach((field) => {
       transformed[field] = this[field];

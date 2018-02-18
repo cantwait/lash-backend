@@ -6,37 +6,56 @@ const Float = require('mongoose-float').loadType(mongoose, 3);
 const fs = require('fs');
 const APIError = require('../utils/api.error');
 const cloudifyUtil = require('../utils/cloudinary.client');
-const ProductGallery = require('./product.gallery.model');
+const Product = require('./product.model');
+const User = require('./user.model');
 
-/**
- * Product Schema
- * @private
- */
-const productSchema = new mongoose.Schema({
+
+const CustomerSchema = new mongoose.Schema({
   name: {
     type: String,
-    maxlength: 128,
-    unique: true,
-    index: true,
+    maxlength: 50,
+    trim: true
+  },
+  email: {
+    type: String,
+    maxlength: 100,
     trim: true,
   },
-  description: {
+  phone: {
+    type: String
+  }
+});
+
+/**
+ * Service Schema
+ * @private
+ */
+const serviceSchema = new mongoose.Schema({
+  comment: {
     type: String,
     maxlength: 500,
     trim: true
   },
-  category: {
-    type: mongoose.SchemaTypes.ObjectId,
-    ref: 'Category'
+  product: [Product],
+  isPromotion: {
+    type: Boolean,
+    default: false
   },
-  price: {
+  total: {
     type: Float,
     min: 0,
   },
-  specs: {
-    type: String,
-    trim: true
+  rating: {
+    type: Number
   },
+  customer: {
+    type: CustomerSchema,
+    required: true,
+  },
+  collaborator: {
+    type: User,
+    required: true
+  }
 }, {
   timestamps: true,
 });
@@ -47,9 +66,10 @@ const productSchema = new mongoose.Schema({
  * - validations
  * - virtuals
  */
-productSchema.pre('save', async function save(next) {
+serviceSchema.pre('save', async function save(next) {
   try {
-    console.log('Pre Save Product hook!...');
+    //TODO: implement if needed
+    console.log('Pre Service Product hook!...');
     return next();
   } catch (error) {
     return next(error);
@@ -59,24 +79,22 @@ productSchema.pre('save', async function save(next) {
 /**
 * pre-update hooks
 */
-productSchema.pre('findOneAndUpdate', async function update(next) {
+serviceSchema.pre('findOneAndUpdate', async function update(next) {
   try {
     console.log('Pre Update Product hook!...');
+    // TODO: implement if needed
     // this._update.$set.pictures = await cloudifyUtil.processBase64(this.pictures);
+    next();
   } catch (error) {
     return next(error);
   }
 });
 
-productSchema.post('remove', async (next) => {
+serviceSchema.post('remove', async (next) => {
   try {
-    console.log('Product Post remove hook!...');
-    const pictures = ProductGallery.find({product: this._id});//find all pictures by product id
-    if(pictures && pictures.length > 0) {
-      pictures.forEach(element => {
-        element.remove();//I know it may not be the best way for now but need speed things up and take advantage of PictureGallery remove hook
-      });
-    }
+    console.log('Service Post remove hook!...');
+    // TODO: implement if needed
+    next();
   } catch (error) {
     console.log('error executing post remove: %s', JSON.stringify(error));
     return next();
@@ -86,10 +104,10 @@ productSchema.post('remove', async (next) => {
 /**
  * Methods
  */
-productSchema.method({
+serviceSchema.method({
   transform() {
     const transformed = {};
-    const fields = ['id', 'name', 'description', 'category', 'price', 'createdAt'];
+    const fields = ['id', 'comment', 'category', 'price', 'createdAt'];
 
     fields.forEach((field) => {
       transformed[field] = this[field];
@@ -102,7 +120,7 @@ productSchema.method({
 /**
  * Statics
  */
-productSchema.statics = {
+serviceSchema.statics = {
 
   /**
    * List categories in descending order of 'createdAt' timestamp.
@@ -122,33 +140,12 @@ productSchema.statics = {
       .limit(perPage)
       .exec();
   },
-
-  /**
-   * Return new validation error
-   * if error is a mongoose duplicate key error
-   *
-   * @param {Error} error
-   * @returns {Error|APIError}
-   */
-  checkDuplicateEmail(error) {
-    if (error.name === 'MongoError' && error.code === 11000) {
-      return new APIError({
-        message: 'Validation Error',
-        errors: [{
-          field: 'name',
-          location: 'body',
-          messages: ['product with "name" already exists'],
-        }],
-        status: httpStatus.CONFLICT,
-        isPublic: true,
-        stack: error.stack,
-      });
-    }
-    return error;
-  },
 };
 
 /**
- * @typedef Product
+ * @typedef Service
  */
-module.exports = mongoose.model('Product', productSchema);
+module.exports = {
+  Service: mongoose.model('Service', serviceSchema),
+  CustomerSchema,
+};

@@ -7,6 +7,9 @@ const {
   createProduct,
   replaceProduct,
   updateProduct,
+  listPics,
+  addPic,
+  removePic
 } = require('../validations/product.validation')
 
 const router = express.Router()
@@ -132,6 +135,68 @@ router
    * @apiError (Not Found 404)    NotFound      User does not exist
    */
   .delete(authorize(LOGGED_USER), controller.remove);
+
+  router
+    .route('/:pId/gallery')
+    /**
+     * @api {get} v1/products/:pId/gallery List ProductGallery
+     * @apiDescription Get a list of pictures associate to pId product
+     * @apiVersion 1.0.0
+     * @apiName ListGalleryProduct
+     * @apiGroup ProductGallery
+     * @apiPermission user
+     *
+     * @apiHeader {String} Athorization  User's access token
+     *
+     * @apiParam  {Number{1-}}         [page=1]     List page
+     * @apiParam  {Number{1-100}}      [perPage=1]  Categories per page
+     *
+     * @apiSuccess {Object[]} pics List of ProductGallery.
+     *
+     * @apiError (Unauthorized 401)  Unauthorized  Only authenticated users can access the data
+     * @apiError (Forbidden 403)     Forbidden     Only admins can access the data
+     */
+    .get(authorize(LOGGED_USER), validate(listPics), controller.listPics)
+    /**
+     * @api {post} v1/products/:pId/gallery Create Picture associated to pId product
+     * @apiDescription Create a new Picture
+     * @apiVersion 1.0.0
+     * @apiName AddPic
+     * @apiGroup products
+     * @apiPermission admin
+     *
+     * @apiHeader {String} Athorization  User's access token
+     *
+     *
+     * @apiSuccess (Created 201) {String}  id             ProductGallery's id
+     * @apiSuccess (Created 201) {String}  name           ProductGallery's name
+     * @apiSuccess (Created 201) {String}  url            ProductGallery's url (cloudinary)
+     * @apiSuccess (Created 201) {Date}    createdAt      Timestamp
+     *
+     * @apiError (Bad Request 400)   ValidationError  Some parameters may contain invalid values
+     * @apiError (Unauthorized 401)  Unauthorized     Only authenticated users can create the data
+     * @apiError (Forbidden 403)     Forbidden        Only admins can create the data
+     */
+    .post(authorize(ADMIN), validate(addPic), controller.addPic)
+    /**
+     * @api {patch} v1/products/:pId/gallery Delete ProductGallery
+     * @apiDescription Delete a Picture
+     * @apiVersion 1.0.0
+     * @apiName removePic
+     * @apiGroup Product
+     * @apiPermission product
+     *
+     * @apiHeader {String} Athorization  User's access token
+     *
+     * @apiSuccess (No Content 204)  Successfully deleted
+     *
+     * @apiError (Unauthorized 401) Unauthorized  Only authenticated users can delete the data
+     * @apiError (Forbidden 403)    Forbidden     Only user with same id or admins can delete the data
+     * @apiError (Not Found 404)    NotFound      User does not exist
+     */
+router
+  .route('/:pId/gallery/:picId')
+    .delete(authorize(ADMIN), validate(removePic), controller.removePic);
 
 
 module.exports = router;

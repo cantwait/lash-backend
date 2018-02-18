@@ -4,6 +4,7 @@ const { omitBy, isNil } = require('lodash');
 const bcrypt = require('bcryptjs');
 const moment = require('moment-timezone');
 const APIError = require('../utils/api.error');
+const Product = require('./product.model');
 const fs = require('fs');
 
 /**
@@ -32,6 +33,19 @@ categorySchema.pre('save', async function save(next) {
   try {
     console.log('Pre Save Category hook!...');
     return next();
+  } catch (error) {
+    return next(error);
+  }
+});
+
+categorySchema.pre('remove', async (next) => {
+  try {
+    console.log('Pre remove Category hook!...');
+    // PREVENT the category to be removed if at least one product is associated to it.
+    const prodsCount = Product.count({category: this._id}); //count products by category
+    if(prodsCount > 0){
+      return next(new Error('Can\'t remove a category already associated to an existing product'));
+    }
   } catch (error) {
     return next(error);
   }

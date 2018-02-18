@@ -6,26 +6,18 @@ const Float = require('mongoose-float').loadType(mongoose, 3);
 const fs = require('fs');
 const APIError = require('../utils/api.error');
 const cloudifyUtil = require('../utils/cloudinary.client');
+const CustomerSchema = require('./service.model');
 
 /**
- * ProductGallery Schema
+ * Customer Queue Schema
  * @private
  */
-const productGallerySchema = new mongoose.Schema({
-  name: {
-    type: String,
-    maxlength: 128,
-    index: true,
-    trim: true,
+const queueSchema = new mongoose.Schema({
+  customer: {
+    type: CustomerSchema,
+    required: true,
   },
-  product: {
-    type: mongoose.SchemaTypes.ObjectId,
-    ref: 'Product'
-  },
-  url: {
-    type: String
-  }
-  }, {
+}, {
   timestamps: true,
 });
 
@@ -35,34 +27,48 @@ const productGallerySchema = new mongoose.Schema({
  * - validations
  * - virtuals
  */
-productGallerySchema.pre('save', async function save(next) {
+queueSchema.pre('save', async function save(next) {
   try {
-    console.log('Pre Save Gallery hook!...');
-    this.url = await cloudifyUtil.processBase64Object(this.url);
+    //TODO: implement if needed
+    console.log('Pre Queue Product hook!...');
     return next();
   } catch (error) {
     return next(error);
   }
 });
 
-productGallerySchema.pre('remove', async function remove(next) {
+/**
+* pre-update hooks
+*/
+queueSchema.pre('findOneAndUpdate', async function update(next) {
   try {
-    console.log('pre remove Gallery hook!...');
-    cloudifyUtil.destroyPicture(this.url);
-    return next();
+    console.log('Pre Update Queue hook!...');
+    // TODO: implement if needed
+    // this._update.$set.pictures = await cloudifyUtil.processBase64(this.pictures);
+    next();
   } catch (error) {
     return next(error);
   }
-
 });
+
+queueSchema.post('remove', async (next) => {
+  try {
+    console.log('Queue Post remove hook!...');
+    // TODO: implement if needed
+    next();
+  } catch (error) {
+    console.log('error executing post remove: %s', JSON.stringify(error));
+    return next();
+  }
+})
 
 /**
  * Methods
  */
-productGallerySchema.method({
+queueSchema.method({
   transform() {
     const transformed = {};
-    const fields = ['id', 'name', 'url', 'createdAt'];
+    const fields = ['Customer', 'createdAt'];
 
     fields.forEach((field) => {
       transformed[field] = this[field];
@@ -75,7 +81,7 @@ productGallerySchema.method({
 /**
  * Statics
  */
-productGallerySchema.statics = {
+queueSchema.statics = {
 
   /**
    * List categories in descending order of 'createdAt' timestamp.
@@ -85,7 +91,7 @@ productGallerySchema.statics = {
    * @returns {Promise<Category[]>}
    */
   list({
-    page = 1, perPage = 30,
+    page = 1, perPage = 60,
   }) {
 
     return this.find()
@@ -97,6 +103,6 @@ productGallerySchema.statics = {
 };
 
 /**
- * @typedef ProductGallery
+ * @typedef QueueCustomer
  */
-module.exports = mongoose.model('ProductGallery', productGallerySchema);
+module.exports = mongoose.model('QueueCustomer', queueSchema);

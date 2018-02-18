@@ -18,8 +18,7 @@ module.exports = {
       name: Joi.string().min(3).max(128).required(),
       description: Joi.string().min(5).max(500).required(),
       price: Joi.number().positive().required(),
-      pictures: Joi.array(),
-      category: Joi.isRef('Category'),
+      category: Joi.string().regex(/^[a-fA-F0-9]{24}$/).required(),
       specs: Joi.string().min(0).max(500),
     },
   },
@@ -30,12 +29,11 @@ module.exports = {
       name: Joi.string().min(3).max(128).required(),
       description: Joi.string().min(5).max(500).required(),
       price: Joi.number().positive().required(),
-      pictures: Joi.array(),
-      category: Joi.isRef('Category'),
+      category: Joi.string().regex(/^[a-fA-F0-9]{24}$/).required(),
       specs: Joi.string().min(0).max(500),
     },
     params: {
-      catId: Joi.string().regex(/^[a-fA-F0-9]{24}$/).required(),
+      pId: Joi.string().regex(/^[a-fA-F0-9]{24}$/).required(),
     },
   },
 
@@ -45,12 +43,39 @@ module.exports = {
       name: Joi.string().min(3).max(128).required(),
       description: Joi.string().min(5).max(500).required(),
       price: Joi.number().positive().required(),
-      pictures: Joi.array(),
-      category: Joi.isRef('Category'),
+      category: Joi.string().regex(/^[a-fA-F0-9]{24}$/).required(),
       specs: Joi.string().min(0).max(500),
     },
     params: {
-      catId: Joi.string().regex(/^[a-fA-F0-9]{24}$/).required(),
+      pId: Joi.string().regex(/^[a-fA-F0-9]{24}$/).required(),
     },
   },
+
+  //GET /api/v1/products/:pId/gallery
+  listPics: {
+    query: {
+      page: Joi.number().min(1),
+      perPage: Joi.number().min(1).max(100),
+    },
+    params: {
+      pId: Joi.string().regex(/^[a-fA-F0-9]{24}$/).required(),
+    },
+  },
+  //POST /api/v1/products/:pId/gallery
+  addPic: {
+    body: {
+      name: Joi.string().min(3).max(128),
+      url: Joi.string().required(),
+    },
+    params: {
+      pId: Joi.string().regex(/^[a-fA-F0-9]{24}$/).required(),
+    },
+  },
+  //DELETE /api/v1/products/:pId/gallery
+  removePic: {
+    params: {
+      pId: Joi.string().regex(/^[a-fA-F0-9]{24}$/).required(),
+      picId: Joi.string().regex(/^[a-fA-F0-9]{24}$/).required(),
+    },
+  }
 };

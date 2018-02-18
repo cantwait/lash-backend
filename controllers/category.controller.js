@@ -86,9 +86,18 @@ exports.list = async (req, res, next) => {
  * Delete cat
  * @public
  */
-exports.remove = (req, res, next) => {
-
-  Category.findOneAndRemove(req.params.id)
-    .then(() => res.status(httpStatus.NO_CONTENT).end())
-    .catch(e => next(e));
+exports.remove =  async (req, res, next) => {
+  try {
+    const cat = await Category.findById(req.params.catId);
+    if(!cat) {
+      return next(new Error('Category does not exist!'));
+    }
+    cat.remove();
+    res.status(httpStatus.NO_CONTENT).end();
+  } catch (error) {
+    return next(error);
+  }
+  // Category.findOneAndRemove(req.params.id)
+  //   .then(() => res.status(httpStatus.NO_CONTENT).end())
+  //   .catch(e => next(e));
 };
