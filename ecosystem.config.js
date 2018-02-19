@@ -11,7 +11,7 @@ module.exports = {
       ref: 'origin/master',
       repo: 'git@github.com:cantwait/lash-backend.git',
       path: '/home/ubuntu/lash-backend',
-      'post-deploy': 'npm install && db-migrate up:all && pm2 startOrRestart ecosystem.config.js'
+      'post-deploy': 'npm install && npm install db-migrate && npm install db-migrate-mongodb && db-migrate up:all && pm2 startOrRestart ecosystem.config.js'
     }
   }
 }
