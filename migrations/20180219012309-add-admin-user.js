@@ -15,7 +15,7 @@ exports.setup = function(options, seedLink) {
   seed = seedLink;
 };
 
-exports.up = function(db) {
+exports.up = async function(db) {
   const rounds = env === 'development' ? 1 : 10;
   const hash = await bcrypt.hash(pass, rounds);
   return db.insert('users', { role: 'admin', name: 'Administrador', email: 'cadenas.rafael@gmail.com', password: hash });
