@@ -1,5 +1,6 @@
 'use strict';
-
+const bcrypt = require('bcryptjs');
+const { adminPwd } = require('../config/vars');
 var dbm;
 var type;
 var seed;
@@ -15,7 +16,9 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = function(db) {
-  return db.insert('users', { role: 'Administrador', name: 'admin', email: 'cadenas.rafael@gmail.com', password: '5596247696' });
+  const rounds = env === 'development' ? 1 : 10;
+  const hash = await bcrypt.hash(pass, rounds);
+  return db.insert('users', { role: 'admin', name: 'Administrador', email: 'cadenas.rafael@gmail.com', password: hash });
 };
 
 exports.down = function(db) {
