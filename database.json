@@ -1,0 +1,12 @@
+{
+  "development": {
+    "driver": "mongodb",
+    "database": "lash",
+    "host": "localhost"
+  },
+  "production": {
+    "driver": "mongodb",
+    "database": "lash",
+    "host": "localhost"
+  }
+}
