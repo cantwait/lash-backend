@@ -1,6 +1,6 @@
 'use strict';
 const bcrypt = require('bcryptjs');
-const { adminPwd } = require('../config/vars');
+const { adminPwd, env } = require('../config/vars');
 var dbm;
 var type;
 var seed;
