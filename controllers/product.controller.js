@@ -95,9 +95,9 @@ exports.list = async (req, res, next) => {
  * Delete product
  * @public
  */
-exports.remove = (req, res, next) => {
+exports.remove = async (req, res, next) => {
   try {
-    const p = Product.findById(req.params.pId);
+    const p = await Product.findById(req.params.pId);
     if(!p) {
       return next(new Error(`Product Id ${req.params.pId} does not exist!`));
     }
@@ -106,9 +106,6 @@ exports.remove = (req, res, next) => {
   } catch (error) {
     next(error);
   }
-  Product.findOneAndRemove(req.params.pId)
-    .then(() => res.status(httpStatus.NO_CONTENT).end())
-    .catch(e => next(e));
 };
 
 /**

@@ -34,4 +34,5 @@ module.exports = {
   cloudinaryKey: process.env.CLOUDINARY_KEY,
   cloudinarySecret: process.env.CLOUDINARY_SECRET,
   adminPwd: process.env.ADMIN_PWD,
+  uiUrl: process.env.NODE_ENV === 'production' ? process.env.UI_PROD_URL : process.env.UI_LOCAL_URL
 };

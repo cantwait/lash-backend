@@ -9,7 +9,8 @@ const {
   updateProduct,
   listPics,
   addPic,
-  removePic
+  removePic,
+  removeProduct,
 } = require('../validations/product.validation')
 
 const router = express.Router()
@@ -117,7 +118,7 @@ router
    * @apiError (Forbidden 403)    Forbidden    Only user with same id or admins can modify the data
    * @apiError (Not Found 404)    NotFound     User does not exist
    */
-  .patch(authorize(LOGGED_USER), validate(updateProduct), controller.update)
+  .patch(authorize(ADMIN), validate(updateProduct), controller.update)
   /**
    * @api {patch} v1/products/:pId Delete Product
    * @apiDescription Delete a PRoduct
@@ -134,7 +135,7 @@ router
    * @apiError (Forbidden 403)    Forbidden     Only user with same id or admins can delete the data
    * @apiError (Not Found 404)    NotFound      User does not exist
    */
-  .delete(authorize(LOGGED_USER), controller.remove);
+  .delete(authorize(ADMIN), validate(removeProduct),controller.remove);
 
   router
     .route('/:pId/gallery')

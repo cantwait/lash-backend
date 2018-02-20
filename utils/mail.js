@@ -11,11 +11,15 @@ const { emailFrom,
         emailIsSsl,
         emailUser,
         emailPass,
-        emailRejecAuth } = require('../config/vars');
+        emailRejecAuth,
+        uiUrl } = require('../config/vars');
 
 module.exports.sendPassword = function(email, pass) {
     const body = `
         <p>Bienvenido a lalalash su password es: <strong>${pass}</strong></p>
+        <br>
+        <br>
+        <p>Inicie sesión <a target="_blank" href=${uiUrl}>aca</a></p>
     `;
     const subject = 'Contraseña de Usuario';
     this.send(email,subject,body,true);

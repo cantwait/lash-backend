@@ -58,7 +58,6 @@ exports.create = async (req, res, next) => {
  * @public
  */
 exports.update = (req, res, next) => {
-  console.log(req.params);
 	const query = { "_id": req.params.catId};
 	const update = { name: req.body.name };
 	const options = { new: true };
