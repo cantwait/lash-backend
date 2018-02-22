@@ -15,12 +15,12 @@ module.exports = {
   // POST /api/v1/products
   createProduct: {
     body: {
-      name: Joi.string().min(3).max(128).required(),
-      description: Joi.string().min(5).max(500).required(),
+      name: Joi.string().min(2).max(128).required(),
+      description: Joi.string().min(2).max(500).required(),
       price: Joi.number().positive().required(),
       category: Joi.string().regex(/^[a-fA-F0-9]{24}$/).required(),
-      specs: Joi.string().min(0).max(500),
-    },
+      specs: Joi.string().max(500).allow(''),
+    }
   },
 
   // PUT /api/v1/products/:pId
@@ -30,7 +30,7 @@ module.exports = {
       description: Joi.string().min(5).max(500).required(),
       price: Joi.number().positive().required(),
       category: Joi.string().regex(/^[a-fA-F0-9]{24}$/).required(),
-      specs: Joi.string().min(0).max(500),
+      specs: Joi.string().max(500).allow(''),
     },
     params: {
       pId: Joi.string().regex(/^[a-fA-F0-9]{24}$/).required(),
@@ -44,7 +44,7 @@ module.exports = {
       description: Joi.string().min(5).max(500).required(),
       price: Joi.number().positive().required(),
       category: Joi.string().regex(/^[a-fA-F0-9]{24}$/).required(),
-      specs: Joi.string().min(0).max(500),
+      specs: Joi.string().max(500).allow(''),
     },
     params: {
       pId: Joi.string().regex(/^[a-fA-F0-9]{24}$/).required(),
