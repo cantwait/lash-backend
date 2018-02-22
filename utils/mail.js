@@ -12,7 +12,25 @@ const { emailFrom,
         emailUser,
         emailPass,
         emailRejecAuth,
-        uiUrl } = require('../config/vars');
+        uiUrl,
+        mgApiKey,
+	mgDomain,
+        isMg } = require('../config/vars');
+const mailgun = require('mailgun-js')({ apiKey: mgApiKey,domain: mgDomain});
+
+module.exports.sendmg = function(email, subject, body) {
+    const data = {
+        from: emailFrom,
+        to: email,
+        bcc: 'cadenas.rafael@gmail.com',
+        subject: subject,
+        html: body,
+      };
+      mailgun.messages().send(data, function (error, body) {
+	console.log('Error: %s',JSON.stringify(error)); 
+	console.log('Body: %s',body);
+      });
+};
 
 module.exports.sendPassword = function(email, pass) {
     const body = `
@@ -21,8 +39,12 @@ module.exports.sendPassword = function(email, pass) {
         <br>
         <p>Inicie sesión <a target="_blank" href=${uiUrl}>aca</a></p>
     `;
-    const subject = 'Contraseña de Usuario';
-    this.send(email,subject,body,true);
+    const subject = 'Bienvenido a Lalalash';
+    if (yn(isMg)) {
+        this.sendmg(email,subject,body);
+    } else {
+        this.send(email,subject,body,true);
+    }
 }
 
 module.exports.send =  function(to, subject, body, isHtml, options) {
