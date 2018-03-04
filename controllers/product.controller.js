@@ -160,7 +160,7 @@ module.exports.addPics = async (req, res, next) => {
       return next(new Error('Can\'t add pictures: product does not exist!'));
     }
     const pPics = [];
-    await forEach(req.body.urls, (url) => {
+    await forEach(req.body.urls, async (url) => {
       const pBody = {
         product: req.params.pId,
         name: req.body.name,
