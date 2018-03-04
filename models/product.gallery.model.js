@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const httpStatus = require('http-status');
-const { omitBy, isNil } = require('lodash');
+const { omitBy, isNil, isArray } = require('lodash');
 const moment = require('moment-timezone');
 const Float = require('mongoose-float').loadType(mongoose, 3);
 const fs = require('fs');
@@ -38,7 +38,11 @@ const productGallerySchema = new mongoose.Schema({
 productGallerySchema.pre('save', async function save(next) {
   try {
     console.log('Pre Save Gallery hook!...');
-    this.url = await cloudifyUtil.processBase64Object(this.url);
+    if (isArray(this.url)) {
+      this.url = await cloudifyUtil.processBase64Array(this.url);
+    } else {
+      this.url = await cloudifyUtil.processBase64Object(this.url);
+    }
     return next();
   } catch (error) {
     return next(error);

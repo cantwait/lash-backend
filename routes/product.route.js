@@ -11,6 +11,7 @@ const {
   addPic,
   removePic,
   removeProduct,
+  addPics,
 } = require('../validations/product.validation')
 
 const router = express.Router()
@@ -198,6 +199,30 @@ router
 router
   .route('/:pId/gallery/:picId')
     .delete(authorize(ADMIN), validate(removePic), controller.removePic);
+
+router
+  .route('/:pId/galleries')
+    /**
+     * @api {post} v1/products/:pId/galleries Create Pictures associated to pId product
+     * @apiDescription Create a new Picture
+     * @apiVersion 1.0.0
+     * @apiName AddPic
+     * @apiGroup products
+     * @apiPermission admin
+     *
+     * @apiHeader {String} Athorization  User's access token
+     *
+     *
+     * @apiSuccess (Created 201) {String}  id             ProductGallery's id
+     * @apiSuccess (Created 201) {String}  name           ProductGallery's name
+     * @apiSuccess (Created 201) {String}  urls           ProductGallery's url (cloudinary)
+     * @apiSuccess (Created 201) {Date}    createdAt      Timestamp
+     *
+     * @apiError (Bad Request 400)   ValidationError  Some parameters may contain invalid values
+     * @apiError (Unauthorized 401)  Unauthorized     Only authenticated users can create the data
+     * @apiError (Forbidden 403)     Forbidden        Only admins can create the data
+     */
+    .post(authorize(ADMIN), validate(addPics), controller.addPics);
 
 
 module.exports = router;

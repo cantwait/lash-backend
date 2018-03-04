@@ -1,5 +1,5 @@
 const httpStatus = require('http-status');
-const { omit } = require('lodash');
+const { omit, forEach } = require('lodash');
 const Product = require('../models/product.model');
 const { handler: errorHandler } = require('../middlewares/error');
 const cloudinaryUtil = require('../utils/cloudinary.client');
@@ -144,6 +144,34 @@ module.exports.addPic = async (req, res, next) => {
     const savedPic = await pic.save();
     res.status(httpStatus.CREATED);
     res.json(savedPic.transform());
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Add multiple Pictures to product at once
+ * @public
+ */
+module.exports.addPics = async (req, res, next) => {
+  try {
+    const p = await Product.findById(req.params.pId);//make sure it really exists
+    if(!p) {
+      return next(new Error('Can\'t add pictures: product does not exist!'));
+    }
+    const pPics = [];
+    await forEach(req.body.urls, (url) => {
+      const pBody = {
+        product: req.params.pId,
+        name: req.body.name,
+        url: url
+      };
+      const pic = new ProductGallery(pBody);
+      const savedPic = await pic.save();
+      pPics.push(savedPic.transform());
+    });
+    res.status(httpStatus.CREATED);
+    res.json(pPics);
   } catch (error) {
     next(error);
   }

@@ -77,6 +77,16 @@ module.exports = {
       pId: Joi.string().regex(/^[a-fA-F0-9]{24}$/).required(),
     },
   },
+  //POST /api/v1/products/:pid/galleries
+  addPics: {
+    body: {
+      name: Joi.string().min(3).max(128),
+      pictures: Joi.array().required(),
+    },
+    params: {
+      pId: Joi.string().regex(/^[a-fA-F0-9]{24}$/).required(),
+    },
+  },
   //DELETE /api/v1/products/:pId/gallery
   removePic: {
     params: {
