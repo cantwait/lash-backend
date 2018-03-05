@@ -18,8 +18,9 @@ module.exports = {
   createCustomer: {
     body: {
       email: Joi.string().email().required(),
-      name: Joi.string().max(128),
+      name: Joi.string().min(3).max(128).required(),
       phone: Joi.string().min(7).max(12),
+      birthdate: Joi.date().required(),
     },
   },
 
@@ -27,8 +28,9 @@ module.exports = {
   replaceCustomer: {
     body: {
       email: Joi.string().email().required(),
-      name: Joi.string().max(128),
+      name: Joi.string().min(3).max(128).required(),
       phone: Joi.string().min(7).max(12),
+      birthdate: Joi.date().required(),
     },
     params: {
       customerId: Joi.string().regex(/^[a-fA-F0-9]{24}$/).required(),
@@ -39,8 +41,9 @@ module.exports = {
   updateCustomer: {
     body: {
       email: Joi.string().email(),
-      name: Joi.string().max(128),
+      name: Joi.string().min(3).max(128),
       phone: Joi.string().min(7).max(12),
+      birthdate: Joi.date().required(),
     },
     params: {
       customerId: Joi.string().regex(/^[a-fA-F0-9]{24}$/).required(),

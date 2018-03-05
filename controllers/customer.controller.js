@@ -22,6 +22,7 @@ exports.get = async (req, res) => {
  */
 exports.create = async (req, res, next) => {
   try {
+	  console.log(req.body.birthdate);
     const c = new Customer(req.body);
     const savedCustomer = await c.save();
     res.status(httpStatus.CREATED);
@@ -50,7 +51,7 @@ exports.replace = async (req, res, next) => {
  */
 exports.update = async (req, res, next) => {
   const query = { "_id": req.params.customerId};
-  const update = { name: req.body.name, email: req.body.email, role: req.body.role, phone: req.body.phone};
+  const update = { name: req.body.name, email: req.body.email, role: req.body.role, phone: req.body.phone, birthdate: req.body.birthdate };
 	const options = {new: true};
 	Customer.findOneAndUpdate(query,update,options,(err,newCustomer)=>{
    if(err) return next(err);

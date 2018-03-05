@@ -5,6 +5,7 @@ const moment = require('moment-timezone');
 const APIError = require('../utils/api.error');
 const fs = require('fs');
 const mongoosePaginate = require('mongoose-paginate');
+const DateOnly = require('mongoose-dateonly')(mongoose);
 
 
 /**
@@ -25,6 +26,9 @@ const customerSchema = new mongoose.Schema({
     maxlength: 128,
     index: true,
     trim: true,
+  },
+  birthdate: {
+    type: DateOnly
   },
   phone: {
     type: String,
@@ -68,10 +72,15 @@ customerSchema.post('update', async (next) => {
 customerSchema.method({
   transform() {
     const transformed = {};
-    const fields = ['id', 'name', 'email', 'createdAt', 'updatedAt', 'phone'];
+    const fields = ['id', 'name', 'email', 'createdAt', 'updatedAt', 'phone', 'birthdate'];
 
     fields.forEach((field) => {
-      transformed[field] = this[field];
+      if (field === 'birthdate'){
+	      console.log('date: %s',this[field]);
+	transformed[field] = moment(this[field]).format('YYYY-MM-DD');
+      } else {
+     	 transformed[field] = this[field];
+      }
     });
 
     return transformed;
