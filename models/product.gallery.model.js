@@ -6,6 +6,7 @@ const Float = require('mongoose-float').loadType(mongoose, 3);
 const fs = require('fs');
 const APIError = require('../utils/api.error');
 const cloudifyUtil = require('../utils/cloudinary.client');
+const s3Utils = require('../utils/s3.client');
 
 /**
  * ProductGallery Schema
@@ -24,8 +25,11 @@ const productGallerySchema = new mongoose.Schema({
   },
   url: {
     type: String
+  },
+  picId: {
+    type: String
   }
-  }, {
+ }, {
   timestamps: true,
 });
 
@@ -38,11 +42,18 @@ const productGallerySchema = new mongoose.Schema({
 productGallerySchema.pre('save', async function save(next) {
   try {
     console.log('Pre Save Gallery hook!...');
+    this.picId = Math.floor(1000000 + Math.random() * 9000000) + '.png';
     if (isArray(this.url)) {
       this.url = await cloudifyUtil.processBase64Array(this.url);
     } else {
-      this.url = await cloudifyUtil.processBase64Object(this.url);
+	try {
+	  this.url = await s3Utils.uploadFileS3(this.url, this.picId);
+	} catch (e) {
+	  console.log(JSON.stringify(e));
+	  return next(e);
+	}
     }
+    console.log('url: %s', this.url);
     return next();
   } catch (error) {
     return next(error);
@@ -52,7 +63,7 @@ productGallerySchema.pre('save', async function save(next) {
 productGallerySchema.pre('remove', async function remove(next) {
   try {
     console.log('pre remove Gallery hook!...');
-    cloudifyUtil.destroyPicture(this.url);
+    s3Utils.destroyS3Object(this.picId);
     return next();
   } catch (error) {
     return next(error);
@@ -88,11 +99,11 @@ productGallerySchema.statics = {
    * @param {number} limit - Limit number of categories to be returned.
    * @returns {Promise<Category[]>}
    */
-  list({
+  list(pId,{
     page = 1, perPage = 30,
   }) {
 
-    return this.find()
+    return this.find({product: pId})
       .sort({ createdAt: -1 })
       .skip(perPage * (page - 1))
       .limit(perPage)

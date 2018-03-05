@@ -117,7 +117,7 @@ module.exports.listPics = async (req, res, next) => {
     if(!p) {
       return next(new Error('Can\'t list pictures for a product that does not exist!'));
     }
-    const pics = await ProductGallery.list(req.query);
+    const pics = await ProductGallery.list(req.params.pId, req.query);
     const transformedPics = pics.map(pic => pic.transform());
     res.json(transformedPics);
   } catch (error) {

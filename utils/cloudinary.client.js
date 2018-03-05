@@ -31,7 +31,12 @@ async function processBase64Array(array) {
 
 async function processBase64Object(picture){
   if(picture && isBase64(picture)){
-    const url = await uploadImage(picture);
+    let url = null;
+    try{
+      url = await uploadImage(picture);
+    } catch (e) {
+      return e;
+    }
     if (url) {
       return url;
     }
@@ -89,6 +94,7 @@ function uploadImage(base64) {
         console.log('image upload success');
         res(result.secure_url);
       } else {
+	console.log('Error uploading image: %s', JSON.stringify(error));
         rej(new Error('could not upload image to cloudinary: %s', error));
       }
     });
