@@ -6,7 +6,8 @@ const Float = require('mongoose-float').loadType(mongoose, 3);
 const fs = require('fs');
 const APIError = require('../utils/api.error');
 const cloudifyUtil = require('../utils/cloudinary.client');
-const CustomerSchema = require('./service.model');
+const Customer = require('./customer.model');
+const { push } = require('../utils/pusher-cli');
 
 /**
  * Customer Queue Schema
@@ -14,8 +15,8 @@ const CustomerSchema = require('./service.model');
  */
 const queueSchema = new mongoose.Schema({
   customer: {
-    type: CustomerSchema,
-    required: true,
+    type: mongoose.SchemaTypes.ObjectId,
+    ref: 'Customer'
   },
 }, {
   timestamps: true,
@@ -34,6 +35,36 @@ queueSchema.pre('save', async function save(next) {
     return next();
   } catch (error) {
     return next(error);
+  }
+});
+
+/**
+ * - post-save
+ */
+queueSchema.post('save', async (q, next) => {
+  try {
+    // TODO we probably need to send the newly created queue to pusher to update the UI in real time...
+    // PUSHER logic must be here.
+    const queue = {
+      _id: q.id,
+      customer: await Customer.findById(q.customer),
+    }
+    push('queues', 'onNewQueue', {
+      queue,
+    });
+    return next();
+  } catch(e) {
+    console.log(e);
+    return next(e);
+  }
+});
+
+queueSchema.post('remove', async (q, next) => {
+  try {
+    push('queues', 'onQueueRemoved', { id: q.id });
+    return next();
+  } catch(e) {
+    return next(e);
   }
 });
 
@@ -68,7 +99,7 @@ queueSchema.post('remove', async (next) => {
 queueSchema.method({
   transform() {
     const transformed = {};
-    const fields = ['Customer', 'createdAt'];
+    const fields = ['customer', 'createdAt', 'updatedAt'];
 
     fields.forEach((field) => {
       transformed[field] = this[field];
@@ -95,6 +126,10 @@ queueSchema.statics = {
   }) {
 
     return this.find()
+      .populate({
+        path: 'customer',
+        select: 'email name birthdate phone'
+      })
       .sort({ createdAt: -1 })
       .skip(perPage * (page - 1))
       .limit(perPage)

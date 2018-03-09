@@ -47,6 +47,7 @@
     "passport": "^0.4.0",
     "passport-http-bearer": "^1.0.1",
     "passport-jwt": "^3.0.1",
+    "pusher": "^1.5.1",
     "randomstring": "^1.1.5",
     "smtp-server": "^3.4.1",
     "url-regex": "^4.1.1",

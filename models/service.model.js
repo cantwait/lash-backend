@@ -10,22 +10,6 @@ const Product = require('./product.model');
 const User = require('./user.model');
 
 
-const CustomerSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    maxlength: 50,
-    trim: true
-  },
-  email: {
-    type: String,
-    maxlength: 100,
-    trim: true,
-  },
-  phone: {
-    type: String
-  }
-});
-
 /**
  * Service Schema
  * @private
@@ -49,13 +33,13 @@ const serviceSchema = new mongoose.Schema({
     type: Number
   },
   customer: {
-    type: CustomerSchema,
-    required: true,
+    type: mongoose.SchemaTypes.ObjectId,
+    ref: 'Customer'
   },
   collaborator: {
     type: User,
     required: true
-  }
+   }
 }, {
   timestamps: true,
 });
@@ -146,6 +130,5 @@ serviceSchema.statics = {
  * @typedef Service
  */
 module.exports = {
-  Service: mongoose.model('Service', serviceSchema),
-  CustomerSchema,
+  Service: mongoose.model('Service', serviceSchema)
 };

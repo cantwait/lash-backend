@@ -42,4 +42,8 @@ module.exports = {
   awsAccessKey: process.env.AWS_ACCESS_KEY,
   awsSecretKey: process.env.AWS_SECRET_KEY,
   awsS3Bucket: process.env.AWS_S3_BUCKET_NAME,
+  pusherAppId: process.env.PUSHER_APP_ID,
+  pusherKey: process.env.PUSHER_KEY,
+  pusherSecret: process.env.PUSHER_SECRET,
+  pusherCluster: process.env.PUSHER_CLUSTER,
 };
