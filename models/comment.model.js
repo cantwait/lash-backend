@@ -15,6 +15,7 @@ const commentSchema = new mongoose.Schema({
     type: String,
     maxlength: 350,
     trim: true,
+    text: true,
   },
   user: {
     type: User

@@ -16,8 +16,6 @@ const productSchema = new mongoose.Schema({
   name: {
     type: String,
     maxlength: 128,
-    unique: true,
-    index: true,
     trim: true,
   },
   description: {
@@ -40,6 +38,8 @@ const productSchema = new mongoose.Schema({
 }, {
   timestamps: true,
 });
+
+productSchema.index({ name: 'text', description: 'text'});
 
 /**
  * Add your

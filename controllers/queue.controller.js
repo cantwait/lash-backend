@@ -25,7 +25,7 @@ exports.create = async (req, res, next) => {
 exports.list = async (req, res, next) => {
   try {
     const queues = await Queue.list(req.query);
-    const transformedqs = queues.map(cat => q.transform());
+    const transformedqs = queues.map(q => q.transform());
     res.json(transformedqs);
   } catch (error) {
     next(error);

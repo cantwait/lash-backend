@@ -74,6 +74,21 @@ exports.list = async (req, res, next) => {
 };
 
 /**
+* Get Customer list by name (like)
+* @public
+*/
+exports.listLikeName = async (req, res, next) => {
+  try {
+	  console.log('fasdf');
+    const Customers = await Customer.listLikeName(req.query);
+    const transformedCustomers = Customers.map(customer => customer.transform());
+    res.json(transformedCustomers);
+  } catch (e) {
+    next(e);
+  }
+};
+
+/**
  * Delete Customer
  * @public
  */

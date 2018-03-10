@@ -46,12 +46,10 @@ queueSchema.post('save', async (q, next) => {
     // TODO we probably need to send the newly created queue to pusher to update the UI in real time...
     // PUSHER logic must be here.
     const queue = {
-      _id: q.id,
+      id: q.id,
       customer: await Customer.findById(q.customer),
     }
-    push('queues', 'onNewQueue', {
-      queue,
-    });
+    push('queues', 'onNewQueue', queue);
     return next();
   } catch(e) {
     console.log(e);
@@ -61,7 +59,8 @@ queueSchema.post('save', async (q, next) => {
 
 queueSchema.post('remove', async (q, next) => {
   try {
-    push('queues', 'onQueueRemoved', { id: q.id });
+    console.log('queue: %s', q);
+    push('queues', 'onQueueRemoved', q.id);
     return next();
   } catch(e) {
     return next(e);
@@ -99,7 +98,7 @@ queueSchema.post('remove', async (next) => {
 queueSchema.method({
   transform() {
     const transformed = {};
-    const fields = ['customer', 'createdAt', 'updatedAt'];
+    const fields = ['id','customer', 'createdAt', 'updatedAt'];
 
     fields.forEach((field) => {
       transformed[field] = this[field];
@@ -130,7 +129,7 @@ queueSchema.statics = {
         path: 'customer',
         select: 'email name birthdate phone'
       })
-      .sort({ createdAt: -1 })
+      .sort({ createdAt: 1 })
       .skip(perPage * (page - 1))
       .limit(perPage)
       .exec();

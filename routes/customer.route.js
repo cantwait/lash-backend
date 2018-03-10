@@ -7,6 +7,7 @@ const {
   createCustomer,
   replaceCustomer,
   updateCustomer,
+  listLikeName
 } = require('../validations/customer.validation')
 
 const router = express.Router();
@@ -62,6 +63,9 @@ router
    */
   .post(authorize(ADMIN), validate(createCustomer), controller.create);
 
+router
+  .route('/search')
+    .get(authorize(LOGGED_USER), validate(listLikeName), controller.listLikeName);
 
 router
   .route('/:customerId')

@@ -19,12 +19,10 @@ const customerSchema = new mongoose.Schema({
     required: true,
     trim: true,
     lowercase: true,
-    index: true,
   },
   name: {
     type: String,
     maxlength: 128,
-    index: true,
     trim: true,
   },
   birthdate: {
@@ -34,12 +32,13 @@ const customerSchema = new mongoose.Schema({
     type: String,
     minlength: 7,
     maxlength: 12,
-    index: true,
     trim: true,
   }
 }, {
   timestamps: true,
 });
+
+customerSchema.index({ email: 'text', name: 'text', phone: 'text' });
 
 customerSchema.plugin(mongoosePaginate);
 
@@ -100,14 +99,23 @@ customerSchema.statics = {
    * @returns {Promise<User[]>}
    */
   list({
-    page = 1, perPage = 30, name, email
+    page = 1, perPage = 30, name, email, phone
   }) {
-    const options = omitBy({ name, email }, isNil);
+    const options = omitBy({name, email, phone }, isNil);
 
     return this.find(options)
       .sort({ createdAt: -1 })
       .skip(perPage * (page - 1))
       .limit(perPage)
+      .exec();
+  },
+  listLikeName({name}) {
+    if (!name) {
+      name = '';
+    }
+    return this
+      .find({$text: { $search: name }})
+      .sort({ name: 1 })
       .exec();
   },
 };

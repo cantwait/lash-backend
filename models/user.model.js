@@ -44,7 +44,6 @@ const userSchema = new mongoose.Schema({
   name: {
     type: String,
     maxlength: 128,
-    index: true,
     trim: true,
   },
   role: {
@@ -66,6 +65,8 @@ const userSchema = new mongoose.Schema({
 }, {
   timestamps: true,
 });
+
+userSchema.index({ email: 'text', name: 'text' });
 
 userSchema.plugin(mongoosePaginate);
 
