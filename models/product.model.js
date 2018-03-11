@@ -31,6 +31,10 @@ const productSchema = new mongoose.Schema({
     type: Float,
     min: 0,
   },
+  isPromotion: {
+    type: Boolean,
+    default: false,
+  },
   specs: {
     type: String,
     trim: true
