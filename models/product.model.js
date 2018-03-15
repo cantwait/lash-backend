@@ -121,7 +121,7 @@ productSchema.statics = {
     const options = omitBy({ name }, isNil);
 
     return this.find(options)
-      .populate('category','name')
+      .populate('category')
       .sort({ createdAt: -1 })
       .skip(perPage * (page - 1))
       .limit(perPage)

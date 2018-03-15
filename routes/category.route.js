@@ -144,5 +144,9 @@ router
    */
   .delete(authorize(LOGGED_USER), controller.remove);
 
+router
+  .route('/:catId/products')
+    .get(authorize(LOGGED_USER), controller.getProductsPerCat);
+
 
 module.exports = router;

@@ -16,6 +16,7 @@ module.exports = {
   createCategory: {
     body: {
       name: Joi.string().min(3).max(128).required(),
+      icon: Joi.string().required(),
     },
   },
 
@@ -33,6 +34,7 @@ module.exports = {
   updateCategory: {
     body: {
       name: Joi.string().max(128),
+      icon: Joi.string().required(),
     },
     params: {
       catId: Joi.string().regex(/^[a-fA-F0-9]{24}$/).required(),

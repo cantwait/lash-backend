@@ -26,9 +26,8 @@ const ProductSchema = new mongoose.Schema({
   },
 });
 const UserSchema = new mongoose.Schema({
-  id: {
+  _id: {
     type: mongoose.SchemaTypes.ObjectId,
-    unique: true,
   },
   email: {
     type: String,

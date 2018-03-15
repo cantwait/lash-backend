@@ -1,6 +1,6 @@
 const httpStatus = require('http-status');
 const { omit } = require('lodash');
-const Session = require('../models/category.model');
+const Session = require('../models/session.model');
 const { handler: errorHandler } = require('../middlewares/error');
 
 
@@ -48,8 +48,8 @@ exports.update = (req, res, next) => {
 exports.list = async (req, res, next) => {
   try {
     const sessions = await Session.list(req.query);
-    const transformedCats = categories.map(cat => cat.transform());
-    res.json(transformedCats);
+    const transformedSessions = sessions.map(s => s.transform());
+    res.json(transformedSessions);
   } catch (error) {
     next(error);
   }

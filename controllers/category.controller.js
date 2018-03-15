@@ -1,6 +1,7 @@
 const httpStatus = require('http-status');
 const { omit } = require('lodash');
 const Category = require('../models/category.model');
+const Product = require('../models/product.model');
 const { handler: errorHandler } = require('../middlewares/error');
 
 /**
@@ -59,7 +60,7 @@ exports.create = async (req, res, next) => {
  */
 exports.update = (req, res, next) => {
 	const query = { "_id": req.params.catId};
-	const update = { name: req.body.name };
+	const update = { name: req.body.name, icon: req.body.icon };
 	const options = { new: true };
 	Category.findOneAndUpdate(query,update,options,(err,newCat)=>{
    if(err) return next(Category.checkDuplicatedEmail(err));
@@ -99,4 +100,20 @@ exports.remove =  async (req, res, next) => {
   // Category.findOneAndRemove(req.params.id)
   //   .then(() => res.status(httpStatus.NO_CONTENT).end())
   //   .catch(e => next(e));
+};
+
+/**
+ * get products per category
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ */
+exports.getProductsPerCat = async (req, res, next) => {
+  try {
+    const prods = await Product.find({ category: req.params.catId });
+    const transformedProds = prods.map(p => p.transform());
+    res.json(transformedProds);
+  } catch(e) {
+    return next(e);
+  }
 };

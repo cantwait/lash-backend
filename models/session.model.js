@@ -13,7 +13,6 @@ const { push } = require('../utils/pusher-cli');
 const CustomerSchema = new mongoose.Schema({
   id: {
     type: mongoose.SchemaTypes.ObjectId,
-    unique: true,
   },
   email: {
     type: String,
@@ -41,7 +40,6 @@ const CustomerSchema = new mongoose.Schema({
 const UserSchema = new mongoose.Schema({
   id: {
     type: mongoose.SchemaTypes.ObjectId,
-    unique: true,
   },
   email: {
     type: String,
@@ -122,11 +120,7 @@ sessionSchema.pre('save', async function save(next) {
 sessionSchema.pre('remove', async (next) => {
   try {
     console.log('Pre Session Category hook!...');
-    // PREVENT the category to be removed if at least one product is associated to it.
-    const prodsCount = Product.count({category: this._id}); //count products by category
-    if(prodsCount > 0){
-      return next(new Error('Can\'t remove a category already associated to an existing product'));
-    }
+    return next();
   } catch (error) {
     return next(error);
   }
@@ -137,7 +131,7 @@ sessionSchema.pre('remove', async (next) => {
  */
 sessionSchema.post('save', async (s, next) => {
   try {
-    push('sessions', 'onSession', s);
+    push('sessions', 'onSession', s.transform());
     return next();
   } catch(e) {
     console.log(e);
@@ -146,12 +140,27 @@ sessionSchema.post('save', async (s, next) => {
 });
 
 /**
+ * post-remove hook
+ */
+sessionSchema.post('remove', async (s, next) => {
+	try{
+		console.log('session post remove hook...!');
+		push('sessions','onSessionRemove', s.id);
+		return next();
+	}catch (e) {
+		console.log('Error on session post remove hook: %s', JSON.stringify(e));
+		return next(e);
+	}
+
+});
+
+/**
  * Methods
  */
 sessionSchema.method({
   transform() {
     const transformed = {};
-    const fields = ['id', 'name', 'createdAt'];
+    const fields = ['id', 'services', 'owner', 'total', 'rating', 'customer', 'state', 'endedAt','createdAt'];
 
     fields.forEach((field) => {
       transformed[field] = this[field];
@@ -167,14 +176,14 @@ sessionSchema.method({
 sessionSchema.statics = {
 
   /**
-   * List categories in descending order of 'createdAt' timestamp.
+   * List sessions in descending order of 'createdAt' timestamp.
    *
    * @param {number} skip - Number of categories to be skipped.
    * @param {number} limit - Limit number of categories to be returned.
    * @returns {Promise<Category[]>}
    */
   list({
-    page = 1, perPage = 30, name,
+    page = 1, perPage = 30, name
   }) {
     const options = omitBy({ name }, isNil);
 
