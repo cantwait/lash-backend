@@ -62,7 +62,7 @@ categorySchema.pre('remove', async (next) => {
 categorySchema.method({
   transform() {
     const transformed = {};
-    const fields = ['id', 'name', 'createdAt'];
+    const fields = ['id', 'name', 'createdAt', 'icon'];
 
     fields.forEach((field) => {
       transformed[field] = this[field];
