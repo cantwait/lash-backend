@@ -3,20 +3,44 @@ const { omit } = require('lodash');
 const User = require('../models/user.model');
 const { handler: errorHandler } = require('../middlewares/error');
 const cloudinaryUtil = require('../utils/cloudinary.client');
+const { LOGGED_USER } = require('../middlewares/auth');
+const Session = require('../models/session.model');
+const  mongoose  = require('mongoose');
 
 /**
  * Load user and append to req.
  * @public
  */
 exports.load = async (req, res, next, id) => {
+  console.log('loading logged user');
   try {
     const user = await User.get(id);
+    console.log('loaded user: %s', user.role);
+    if (user.role !== 'admin') {
+       user.role = LOGGED_USER;
+    }
     req.locals = { user };
     return next();
   } catch (error) {
     return errorHandler(error, req, res);
   }
 };
+
+/**
+ * List all sessions by user
+ */
+exports.sessionsByUser = async (req,res,next) => {
+
+ console.log('listong sessions by user id: %s', req.params.userId);
+ try {
+   const sessions = await Session.aggregate([{ $match: { 'services.responsible.id': mongoose.Types.ObjectId(req.params.userId)}},{$unwind: '$services'}]);
+   //const transformedSessions = sessions.map(session => session.transform());
+   res.json(sessions);
+ } catch (e) {
+   return next(e);
+ }
+
+}
 
 /**
  * Get user
@@ -73,13 +97,12 @@ exports.update = async (req, res, next) => {
   //const ommitRole = req.locals.user.role !== 'admin' ? 'role' : '';
   //const updatedUser = omit(req.body, ommitRole);
   //const user = Object.assign(req.locals.user, req.body)
-  console.log(req.params);
   const query = { "_id": req.params.userId};
-  const picture = await cloudinaryUtil.processBase64Object(req.body.picture);
-  const update = { name: req.body.name, email: req.body.email, role: req.body.role };
-  if(picture) {
-    update['picture'] = picture;
-  }
+  //const picture = await cloudinaryUtil.processBase64Object(req.body.picture);
+  const update = { name: req.body.name, email: req.body.email, role: req.body.role,phone: req.body.phone, address: req.body.address, fee: req.body.fee };
+  //if(picture) {
+  //  update['picture'] = picture;
+  //}
 	const options = {new: true};
 	User.findOneAndUpdate(query,update,options,(err,newUser)=>{
    if(err) return next(err);

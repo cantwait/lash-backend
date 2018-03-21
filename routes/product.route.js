@@ -158,7 +158,7 @@ router
      * @apiError (Unauthorized 401)  Unauthorized  Only authenticated users can access the data
      * @apiError (Forbidden 403)     Forbidden     Only admins can access the data
      */
-    .get(authorize(LOGGED_USER), validate(listPics), controller.listPics)
+    .get(authorize(), validate(listPics), controller.listPics)
     /**
      * @api {post} v1/products/:pId/gallery Create Picture associated to pId product
      * @apiDescription Create a new Picture

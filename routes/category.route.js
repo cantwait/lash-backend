@@ -37,7 +37,7 @@ router
    * @apiError (Unauthorized 401)  Unauthorized  Only authenticated categories can access the data
    * @apiError (Forbidden 403)     Forbidden     Only admins can access the data
    */
-  .get(authorize(ADMIN), validate(listCategories), controller.list)
+  .get(authorize(), validate(listCategories), controller.list)
   /**
    * @api {post} v1/categories Create Category
    * @apiDescription Create a new category
@@ -146,7 +146,7 @@ router
 
 router
   .route('/:catId/products')
-    .get(authorize(LOGGED_USER), controller.getProductsPerCat);
+    .get(authorize(), controller.getProductsPerCat);
 
 
 module.exports = router;

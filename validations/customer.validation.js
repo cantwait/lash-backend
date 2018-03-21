@@ -21,6 +21,13 @@ module.exports = {
     }
   },
 
+  // GET /api/v1/customers/:customerId/sessions
+  listSessionsByCustomer: {
+    query: {
+      customerId: Joi.string().regex(/^[a-zA-Z0-9\s]{0,25}$/),
+    },
+  },
+
   // POST /api/v1/customers
   createCustomer: {
     body: {

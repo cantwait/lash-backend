@@ -13,6 +13,7 @@ const { push } = require('../utils/pusher-cli');
 const CustomerSchema = new mongoose.Schema({
   id: {
     type: mongoose.SchemaTypes.ObjectId,
+    index: true,
   },
   email: {
     type: String,
@@ -83,11 +84,15 @@ const sessionSchema = new mongoose.Schema({
   endDate: {
     type: Date,
   },
-  services: [ServiceSchema],
+  services: {
+    type: [ServiceSchema],
+    default: [],
+  },
   owner: UserSchema,
   total: {
     type: Float,
     min: 0,
+    default: 0,
   },
   rating: {
     type: Number
@@ -131,7 +136,13 @@ sessionSchema.pre('remove', async (next) => {
  */
 sessionSchema.post('save', async (s, next) => {
   try {
-    push('sessions', 'onSession', s.transform());
+    if (s.state === 'closed'){
+      console.log('finishing session status: %s', s.state);
+      push('sessions', 'onSessionRemove',s.id);
+    } else {
+      console.log('on post save: %s',JSON.stringify(s));
+      push('sessions', 'onSession', s.transform());
+    }
     return next();
   } catch(e) {
     console.log(e);
@@ -160,7 +171,7 @@ sessionSchema.post('remove', async (s, next) => {
 sessionSchema.method({
   transform() {
     const transformed = {};
-    const fields = ['id', 'services', 'owner', 'total', 'rating', 'customer', 'state', 'endedAt','createdAt'];
+    const fields = ['id', 'services', 'owner', 'total', 'rating', 'customer', 'state', 'endedAt','createdAt','comment'];
 
     fields.forEach((field) => {
       transformed[field] = this[field];
@@ -186,6 +197,7 @@ sessionSchema.statics = {
     page = 1, perPage = 30, name
   }) {
     const options = omitBy({ name }, isNil);
+    options.state = 'opened';
 
     return this.find(options)
       .sort({ createdAt: -1 })

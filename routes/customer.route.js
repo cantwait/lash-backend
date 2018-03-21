@@ -7,7 +7,8 @@ const {
   createCustomer,
   replaceCustomer,
   updateCustomer,
-  listLikeName
+  listLikeName,
+  listSessionsByCustomer,
 } = require('../validations/customer.validation')
 
 const router = express.Router();
@@ -61,11 +62,16 @@ router
    * @apiError (Unauthorized 401)  Unauthorized     Only authenticated Customers can create the data
    * @apiError (Forbidden 403)     Forbidden        Only admins can create the data
    */
-  .post(authorize(ADMIN), validate(createCustomer), controller.create);
+  .post(authorize(LOGGED_USER), validate(createCustomer), controller.create);
 
 router
   .route('/search')
-    .get(authorize(LOGGED_USER), validate(listLikeName), controller.listLikeName);
+    .get(authorize(), validate(listLikeName), controller.listLikeName);
+
+router
+  .route('/:customerId/sessions')
+    .get(authorize(ADMIN),validate(listSessionsByCustomer),controller.listSessionsByCustomer);
+	
 
 router
   .route('/:customerId')

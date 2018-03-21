@@ -1,6 +1,7 @@
 const httpStatus = require('http-status');
 const { omit } = require('lodash');
 const Customer = require('../models/customer.model');
+const Session = require('../models/session.model');
 const { handler: errorHandler } = require('../middlewares/error');
 
 /**
@@ -29,6 +30,15 @@ exports.create = async (req, res, next) => {
     res.json(savedCustomer.transform());
   } catch (error) {
     next(error);
+  }
+};
+
+exports.listSessionsByCustomer = async (req, res, next) => {
+  try {
+    const sessions = await Session.find({ 'customer.id': req.params.customerId });
+    res.json(sessions.map(s => s.transform()));
+  } catch (e) {
+    next(e);
   }
 };
 
@@ -65,8 +75,8 @@ exports.update = async (req, res, next) => {
  */
 exports.list = async (req, res, next) => {
   try {
-    const Customers = await Customer.list(req.query);
-    const transformedCustomers = Customers.map(customer => customer.transform());
+    const customers = await Customer.list(req.query);
+    const transformedCustomers = customers.map(customer => customer.transform());
     res.json(transformedCustomers);
   } catch (error) {
     next(error);

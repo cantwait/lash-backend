@@ -31,13 +31,16 @@ const productSchema = new mongoose.Schema({
     type: Float,
     min: 0,
   },
-  isPromotion: {
+  offer: {
     type: Boolean,
     default: false,
   },
   specs: {
     type: String,
     trim: true
+  },
+  generateFee: {
+    type: Boolean
   },
 }, {
   timestamps: true,
@@ -93,7 +96,7 @@ productSchema.post('remove', async (next) => {
 productSchema.method({
   transform() {
     const transformed = {};
-    const fields = ['id', 'name', 'description', 'category', 'price', 'createdAt', 'specs'];
+    const fields = ['id', 'name', 'description', 'category', 'price', 'createdAt', 'specs','offer','generateFee'];
 
     fields.forEach((field) => {
       transformed[field] = this[field];

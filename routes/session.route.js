@@ -30,7 +30,7 @@ router
    * @apiError (Unauthorized 401)  Unauthorized  Only authenticated categories can access the data
    * @apiError (Forbidden 403)     Forbidden     Only admins can access the data
    */
-  .get(authorize(LOGGED_USER), validate(listSessions), controller.list)
+  .get(authorize(), validate(listSessions), controller.list)
   /**
    * @api {post} v1/sessions Create Session
    * @apiDescription Create a new sessio
@@ -50,7 +50,7 @@ router
    * @apiError (Unauthorized 401)  Unauthorized     Only authenticated users can create the data
    * @apiError (Forbidden 403)     Forbidden        Only admins can create the data
    */
-  .post(authorize(LOGGED_USER), validate(createSession), controller.create);
+  .post(authorize(), validate(createSession), controller.create);
 
 router
   .route('/:sessId')
@@ -75,7 +75,7 @@ router
    * @apiError (Forbidden 403)    Forbidden    Only user with same id or admins can modify the data
    * @apiError (Not Found 404)    NotFound     Category does not exist
    */
-  .patch(authorize(LOGGED_USER), validate(updateSession), controller.update)
+  .patch(authorize(), validate(updateSession), controller.update)
   /**
    * @api {patch} v1/sessions/:sessId Delete Session
    * @apiDescription Delete a category

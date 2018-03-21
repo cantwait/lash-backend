@@ -21,6 +21,8 @@ module.exports = {
       password: Joi.string().max(128),
       name: Joi.string().max(128),
       role: Joi.string().valid(User.roles),
+      address: Joi.string().max(128),
+      phone: Joi.string().max(12),
     },
   },
 
@@ -44,6 +46,8 @@ module.exports = {
       password: Joi.string().min(6).max(128),
       name: Joi.string().max(128),
       role: Joi.string().valid(User.roles),
+      address: Joi.string().max(128),
+      phone: Joi.string().max(12),
     },
     params: {
       userId: Joi.string().regex(/^[a-fA-F0-9]{24}$/).required(),

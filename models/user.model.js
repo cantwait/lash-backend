@@ -61,7 +61,15 @@ const userSchema = new mongoose.Schema({
   active: {
     type: Boolean,
     default: true,
-  }
+  },
+  address: {
+    type: String,
+    maxlength: 128,
+  },
+  phone: {
+    type: String,
+    maxlength: 12,
+  },
 }, {
   timestamps: true,
 });
@@ -80,7 +88,7 @@ userSchema.pre('save', async function save(next) {
   try {
     //if (!this.isModified('password')) return next();
     console.log('users pre save hook!...');
-    const rounds = env === 'dev' ? 1 : 10;
+    const rounds = env === 'development' ? 1 : 10;
     const pass =  randomstring.generate(10);
     const hash = await bcrypt.hash(pass, rounds);
     this.password = hash;
@@ -106,7 +114,7 @@ userSchema.post('update', async (next) => {
 userSchema.method({
   transform() {
     const transformed = {};
-    const fields = ['id', 'name', 'email', 'picture', 'role', 'fee', 'active', 'createdAt', 'updatedAt'];
+    const fields = ['id', 'name', 'email', 'picture', 'role', 'fee', 'active', 'createdAt', 'updatedAt','phone', 'address'];
 
     fields.forEach((field) => {
       transformed[field] = this[field];

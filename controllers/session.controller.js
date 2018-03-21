@@ -23,8 +23,9 @@ exports.create = async (req, res, next) => {
  * Update existing Session
  * @public
  */
-exports.update = (req, res, next) => {
+exports.update = async (req, res, next) => {
 	const query = { "_id": req.params.sessId};
+	console.log('updating session id: %s', query);
   const update = {
     name: req.body.name,
     comment: req.body.comment,
@@ -33,12 +34,23 @@ exports.update = (req, res, next) => {
     total: req.body.total,
     rating: req.body.rating,
     customer: req.body.customer,
+    state: req.body.state,
   };
-	const options = { new: true };
-	Session.findOneAndUpdate(query,update,options,(err,newSession)=>{
-   if(err) return next(err);
-   res.json(newSession.transform());
-  });
+  const session = await Session.findById(query);
+  if (!session) {
+     res.status(404).end();
+  }
+	console.log('session found setting new values: %s', JSON.stringify(update));
+  session.name = update.name;
+  session.comment = update.comment;
+  session.services = update.services;
+  session.owner = update.owner;
+  session.total = update.total  ? update.total : 0;
+  session.rating = update.rating;
+  session.customer = update.customer;
+  session.state = update.state;
+  const pSession = await session.save();
+  res.json(pSession.transform());
 };
 
 /**

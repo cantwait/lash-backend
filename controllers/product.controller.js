@@ -50,7 +50,11 @@ exports.create = async (req, res, next) => {
     const p = new Product(req.body);
     const savedP = await p.save();
     res.status(httpStatus.CREATED);
-    res.json(savedP.transform());
+    const populatedP = await savedP.populate('category').execPopulate();
+    const pTrans = populatedP.transform();
+    const cat = pTrans.category.transform();
+    pTrans.category = cat;
+    res.json(pTrans);
   } catch (error) {
     next(Product.checkDuplicateEmail(error));
   }
@@ -69,12 +73,15 @@ exports.update =  async (req, res, next) => {
     price: req.body.price,
     category: req.body.category,
     specs: req.body.specs,
+    offer: req.body.offer,
+    generateFee: req.body.generateFee,
   };
 	const options = { new: true };
-	Product.findOneAndUpdate(query,update,options,(err,newProd)=>{
-   if(err) return next(err);
-   res.json(newProd.transform());
-  });
+   const uP = await Product.findOneAndUpdate(query,update,options).populate('category');
+   const pTrans = uP.transform();
+   const cat = pTrans.category.transform();
+   pTrans.category = cat;
+   res.json(pTrans);
 };
 
 /**
@@ -84,7 +91,12 @@ exports.update =  async (req, res, next) => {
 exports.list = async (req, res, next) => {
   try {
     const products = await Product.list(req.query);
-    const transformedProds = products.map(p => p.transform());
+    const transformedProds = products.map(p => { 
+	    const pTrans = p.transform();
+	    const cat = pTrans.category.transform(); 
+	    pTrans.category = cat;
+	   return  pTrans;
+    });
     res.json(transformedProds);
   } catch (error) {
     next(error);
@@ -164,7 +176,7 @@ module.exports.addPics = async (req, res, next) => {
       const pBody = {
         product: req.params.pId,
         name: req.body.name,
-        url: url
+        url: url,
       };
       const pic = new ProductGallery(pBody);
       const savedPic = await pic.save();

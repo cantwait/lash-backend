@@ -8,31 +8,30 @@ const APIError = require('../utils/api.error');
 const cloudifyUtil = require('../utils/cloudinary.client');
 
 
-const ProductSchema = new mongoose.Schema({
-  id: {
-    type: mongoose.SchemaTypes.ObjectId,
-  },
-  name: {
-    type: String,
-    maxlength: 128,
-    trim: true,
-  },
-  category: {
-    type: String,
-  },
-  price: {
-    type: Float,
-    min: 0,
-  },
-});
+// const ProductSchema = new mongoose.Schema({
+//   id: {
+//     type: mongoose.SchemaTypes.ObjectId,
+//   },
+//   name: {
+//     type: String,
+//     maxlength: 128,
+//     trim: true,
+//   },
+//   category: {
+//     type: String,
+//   },
+//   price: {
+//     type: Float,
+//     min: 0,
+//   },
+// });
 const UserSchema = new mongoose.Schema({
-  _id: {
+  id: {
     type: mongoose.SchemaTypes.ObjectId,
   },
   email: {
     type: String,
     match: /^\S+@\S+\.\S+$/,
-    required: true,
     trim: true,
     lowercase: true,
   },
@@ -60,18 +59,27 @@ const UserSchema = new mongoose.Schema({
  * @private
  */
 const serviceSchema = new mongoose.Schema({
-  product: ProductSchema,
   responsible: {
-    type: UserSchema,
-    required: true
+    type: UserSchema
    },
-   quantity: {
-     type: Number,
-     default: 1,
+   name: {
+	   type: String,
    },
-   subTotal: {
+   description: {
+     type: String,
+   },
+   id: {
+     type: mongoose.SchemaTypes.ObjectId,
+   },
+   category: {
+     type: mongoose.SchemaTypes.ObjectId,
+   },
+   price: {
      type: Float,
-   }
+   },
+   generateFee: {
+     type: Boolean,
+   },
 }, {
   timestamps: true,
 });

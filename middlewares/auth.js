@@ -9,9 +9,11 @@ const JwtStrategy = require('passport-jwt').Strategy;
 
 const ADMIN = 'admin';
 const LOGGED_USER = '_loggedUser';
+const CASHIER = 'cashier';
+const USER = 'collaborator';
 
 const handleJWT = (req, res, next, roles) => async (err, user, info) => {
-  console.log('handle JWT')
+  console.log('handle JWT');
   const error = err || info;
   const logIn = Promise.promisify(req.logIn);
   const apiError = new APIError({
@@ -26,6 +28,7 @@ const handleJWT = (req, res, next, roles) => async (err, user, info) => {
   } catch (e) {
     return next(apiError);
   }
+  console.log('IS EQUAL: %s',roles === LOGGED_USER);
   if (roles === LOGGED_USER) {
     if (user.role !== 'admin' && req.params.userId !== user._id.toString()) {
       apiError.status = httpStatus.FORBIDDEN;
@@ -47,6 +50,8 @@ const handleJWT = (req, res, next, roles) => async (err, user, info) => {
 
 exports.ADMIN = ADMIN;
 exports.LOGGED_USER = LOGGED_USER;
+exports.CASHIER = CASHIER;
+exports.USER = USER;
 
 exports.authorize = (roles = User.roles) => (req, res, next) => {
   console.log('authorize')

@@ -96,6 +96,9 @@ router
    */
   .get(authorize(), controller.loggedIn);
 
+router
+  .route('/:userId/sessions')
+    .get(authorize(ADMIN), controller.sessionsByUser);
 
 router
   .route('/:userId')
