@@ -9,6 +9,9 @@ const Float = require('mongoose-float').loadType(mongoose, 3);
 const { ServiceSchema } = require('../models/service.model');
 const fs = require('fs');
 const { push } = require('../utils/pusher-cli');
+const Balance = require('./balance.model');
+
+const INCOME = 'income';
 
 const CustomerSchema = new mongoose.Schema({
   id: {
@@ -139,6 +142,12 @@ sessionSchema.post('save', async (s, next) => {
     if (s.state === 'closed'){
       console.log('finishing session status: %s', s.state);
       push('sessions', 'onSessionRemove',s.id);
+      const balance = new Balance({
+        desc: `Entrada de dinero por sesion de cliente: ${s.customer.name}`,
+        amount: s.total,
+        mode: INCOME,
+      });
+      balance.save();
     } else {
       console.log('on post save: %s',JSON.stringify(s));
       push('sessions', 'onSession', s.transform());
