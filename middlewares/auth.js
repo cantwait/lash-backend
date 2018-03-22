@@ -13,7 +13,8 @@ const CASHIER = 'cashier';
 const USER = 'collaborator';
 
 const handleJWT = (req, res, next, roles) => async (err, user, info) => {
-  console.log('handle JWT');
+  req.locals = { user };
+  console.log('handle JWT:');
   const error = err || info;
   const logIn = Promise.promisify(req.logIn);
   const apiError = new APIError({

@@ -30,7 +30,7 @@ module.exports = {
   resetPwd: {
     body: {
       current: Joi.string().min(6).required(),
-      new: Joi.string().min(6).required(),
+      newPwd: Joi.string().min(6).required(),
     },
   },
 

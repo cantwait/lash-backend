@@ -1,6 +1,8 @@
 const httpStatus = require('http-status');
 const { omit } = require('lodash');
+const bcrypt = require('bcryptjs');
 const User = require('../models/user.model');
+const { env } = require('../config/vars');
 const { handler: errorHandler } = require('../middlewares/error');
 const cloudinaryUtil = require('../utils/cloudinary.client');
 const { LOGGED_USER } = require('../middlewares/auth');
@@ -72,18 +74,19 @@ exports.create = async (req, res, next) => {
 exports.resetPwd = async (req, res, next) => {
   try {
     const { user } = req.locals;
-
+    console.log('user loaded: %s', user);
     const current = req.body.current;
+    const newPwd = req.body.newPwd;
 
-    if (!user.passwordMatches(current)) {
-      return res.status(401).json({ code: 01, msg: 'password does not match!'});
+    console.log('current: %s, newPwd: %s',current, newPwd);
+    const areDiff = await bcrypt.compare(current, user.password);
+	  console.log('arediff: %s',areDiff);
+    if (!areDiff) {
+      return res.status(401).json({ code: 01, message: 'Contrasena incorrecta!'});
     }
-
-    const result = await user.updatePwd();
-
-    if(!result) {
-      return res.status(500).json({code: 02, msg: 'error updating password'});
-    }
+    const rounds = env === 'development' ? 1 : 10;
+    const hash = await bcrypt.hash(newPwd, rounds);
+    await User.findByIdAndUpdate(user.id,{ password: hash });
 
     return res.status(204).end();
 
