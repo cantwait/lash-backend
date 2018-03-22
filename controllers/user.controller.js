@@ -69,6 +69,29 @@ exports.create = async (req, res, next) => {
   }
 };
 
+exports.resetPwd = async (req, res, next) => {
+  try {
+    const { user } = req.locals;
+
+    const current = req.body.current;
+
+    if (!user.passwordMatches(current)) {
+      return res.status(401).json({ code: 01, msg: 'password does not match!'});
+    }
+
+    const result = await user.updatePwd();
+
+    if(!result) {
+      return res.status(500).json({code: 02, msg: 'error updating password'});
+    }
+
+    return res.status(204).end();
+
+  } catch (e) {
+    return next(e);
+  }
+};
+
 /**
  * Replace existing user
  * @public

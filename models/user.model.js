@@ -135,12 +135,26 @@ userSchema.method({
   async passwordMatches(password) {
     return bcrypt.compare(password, this.password);
   },
+
 });
 
 /**
  * Statics
  */
 userSchema.statics = {
+
+  async updatePassword(id, newPwd) {
+    console.log('updating password');
+    try {
+      const rounds = env === 'development' ? 1 : 10;
+      const hash = await bcrypt.hash(pass, rounds);
+      await this.findByIdAndUpdate(id,{ password: hash });
+    } catch (e) {
+      console.log('error updating pwd: %s', JSON.stringify(e));
+      return false;
+    }
+    return true;
+  },
 
   roles,
 

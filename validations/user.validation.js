@@ -26,6 +26,14 @@ module.exports = {
     },
   },
 
+  // POST /api/v1/users/resetpwd
+  resetPwd: {
+    body: {
+      current: Joi.string().min(6).required(),
+      new: Joi.string().min(6).required(),
+    },
+  },
+
   // PUT /api/v1/users/:userId
   replaceUser: {
     body: {

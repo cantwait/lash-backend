@@ -7,6 +7,7 @@ const {
   createUser,
   replaceUser,
   updateUser,
+  resetPwd
 } = require('../validations/user.validation')
 
 const router = express.Router()
@@ -95,6 +96,10 @@ router
    * @apiError (Unauthorized 401)  Unauthorized  Only authenticated Users can access the data
    */
   .get(authorize(), controller.loggedIn);
+
+router
+  .route('/resetpwd')
+    .post(authorize, validate(resetPwd),controller.resetPwd);
 
 router
   .route('/:userId/sessions')
