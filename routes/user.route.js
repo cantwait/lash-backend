@@ -99,7 +99,7 @@ router
 
 router
   .route('/resetpwd')
-    .post(authorize, validate(resetPwd),controller.resetPwd);
+    .post(authorize(), validate(resetPwd),controller.resetPwd);
 
 router
   .route('/:userId/sessions')
