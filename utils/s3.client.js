@@ -12,13 +12,13 @@ AWS.config.update({ accessKeyId: awsAccessKey, secretAccessKey: awsSecretKey, re
 const s3 = new AWS.S3();
 
 module.exports.send = function(to, msg, subject, fromMail) {
-  const msg = {
+  const body = {
     from: fromMail,
     to,
     subject,
     body_text: msg
   };
-  client.mailer.send(msg, function(err, result) {
+  client.mailer.send(body, function(err, result) {
     if (err) {
       return console.error(err);
     }
