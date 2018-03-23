@@ -10,7 +10,6 @@ const client = elasticemail.createClient({
 AWS.config.update({ accessKeyId: awsAccessKey, secretAccessKey: awsSecretKey, region: awsRegion});
 
 const s3 = new AWS.S3();
-const client = ss.createClient({key: awsAccessKey, secret: awsSecretKey});
 
 module.exports.send = function(to, msg, subject, fromMail) {
   const msg = {
