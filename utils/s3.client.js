@@ -1,62 +1,30 @@
 'use strict'
 const AWS = require('aws-sdk');
-const { awsAccessKey, awsSecretKey, awsS3Bucket, awsRegion } = require('../config/vars');
-const ss = require('node-ses');
+const elasticemail = require('elasticemail');
+const { awsAccessKey, awsSecretKey, awsS3Bucket, awsRegion, elasticUser, elasticKey } = require('../config/vars');
+const client = elasticemail.createClient({
+  username: elasticUser,
+  apiKey: elasticKey
+});
 
 AWS.config.update({ accessKeyId: awsAccessKey, secretAccessKey: awsSecretKey, region: awsRegion});
 
 const s3 = new AWS.S3();
-const ses = new AWS.SES();
 const client = ss.createClient({key: awsAccessKey, secret: awsSecretKey});
 
 module.exports.send = function(to, msg, subject, fromMail) {
-  client.sendEmail({
-    to,
+  const msg = {
     from: fromMail,
+    to,
     subject,
-    message: msg,
-  }, function(err, data, res) {
-    if (err) return console.error('error sending email: %s, stack: %s', JSON.stringify(err), err.stack);
-    console.log('data: %s', JSON.stringify(data));
-    console.log('res: %s', JSON.stringify(res));
-  });
-};
-
-module.exports.sendMail = function(to, msg, subject, fromMail) {
-  var params = {
-    Destination: { /* required */
-      CcAddresses: [ ],
-      ToAddresses: [
-        to,
-      ]
-    },
-    Message: { /* required */
-      Body: { /* required */
-        Html: {
-         Charset: "UTF-8",
-         Data: msg,
-        },
-        // Text: {
-        //  Charset: "UTF-8",
-        //  Data: "TEXT_FORMAT_BODY"
-        // }
-       },
-       Subject: {
-        Charset: 'UTF-8',
-        Data: subject
-       }
-      },
-    Source: fromMail, /* required */
-    ReplyToAddresses: [ ],
+    body_text: msg
   };
-  ses.verifyEmailAddress({ EmailAddress: to }, function(err,data) {
-    if (err) return console.log('error verifying email: %s, stack: %s', err, err.stack);
-    ses.sendEmail(params, function(err, data) {
-      if(err) return console.error('error: %s, stack: %s', err, err.stack);
-      console.log('data message: %s', data.messageId);
-    });
+  client.mailer.send(msg, function(err, result) {
+    if (err) {
+      return console.error(err);
+    }
+    console.log(result);
   });
-
 };
 
 module.exports.uploadFileS3 = function(b64, id) {
