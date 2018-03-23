@@ -48,5 +48,5 @@ module.exports = {
   pusherSecret: process.env.PUSHER_SECRET,
   pusherCluster: process.env.PUSHER_CLUSTER,
   elasticUser: process.env.ELASTIC_USERNAME,
-  elasticKey: process.env.ELASTCI_KEY,
+  elasticKey: process.env.ELASTIC_KEY,
 };

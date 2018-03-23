@@ -1,7 +1,7 @@
 'use strict'
 const AWS = require('aws-sdk');
 const axios = require('axios');
-const { awsAccessKey, awsSecretKey, awsS3Bucket, awsRegion, elasticKey } = require('../config/vars');
+const { awsAccessKey, awsSecretKey, awsS3Bucket, awsRegion, elasticKey, emailFrom, emailName } = require('../config/vars');
 
 AWS.config.update({ accessKeyId: awsAccessKey, secretAccessKey: awsSecretKey, region: awsRegion});
 
@@ -10,7 +10,9 @@ const s3 = new AWS.S3();
 module.exports.send = function(to, msg, subject, fromMail) {
   console.log('sending pwd!');
   const body = encodeURI(msg);
-  const url = 'https://api.elasticemail.com/v2/email/send?apikey='+elasticKey+'&subject=test&from=info@lalalashbeautybar.com&fromName=Info&to=cadenas.rafael@gmail.com&msgTo=hola&bodyHtml='+body;
+  const fromM = emailFrom;
+  const fromN = emailName;
+  const url = 'https://api.elasticemail.com/v2/email/send?apikey='+elasticKey+'&subject='+subject+'&from='+fromM+'&fromName='+fromN+'&to='+to+'&bodyHtml='+body;
   console.log('sending email: %s', url);
   axios.get(url)
     .then(res => console.log('Response: %s',JSON.stringify(res)))
