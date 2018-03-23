@@ -37,6 +37,7 @@ module.exports = {
   uiUrl: process.env.NODE_ENV === 'production' ? process.env.UI_PROD_URL : process.env.UI_LOCAL_URL,
   mgApiKey: process.env.MAIL_GUN_API_KEY,
   isMg: process.env.IS_MG,
+  isSes: process.env.IS_SES,
   mgDomain: process.env.MG_DOMAIN,
   awsRegion: process.env.AWS_REGION,
   awsAccessKey: process.env.AWS_ACCESS_KEY,
