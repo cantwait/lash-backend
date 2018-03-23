@@ -17,7 +17,7 @@ module.exports.send = function(to, msg, subject, fromMail) {
   console.log('sending email: %s', url);
   axios.get(url)
     .then(res => console.log('Response: %s',JSON.stringify(res)))
-    .catch(err => console.error('Error elasticmail: %s',JSON.stringify(err)));
+    .catch(err => console.error('Error elasticmail: %s, stack: %s',err, err.stack));
 };
 
 module.exports.uploadFileS3 = function(b64, id) {
