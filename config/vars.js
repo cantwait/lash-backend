@@ -21,6 +21,7 @@ module.exports = {
   publicKey: process.env.PUBLIC_KEY,
   passphrase: process.env.KEY_PASSPHRASE,
   emailFrom: process.env.EMAIL_FROM,
+  emailName: process.env.EMAIL_NAME,
   emailSubject: process.env.EMAIL_SUBJECT,
   emailHtml: process.env.EMAIL_HTML,
   emailHost: process.env.EMAIL_HOST,
