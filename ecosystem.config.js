@@ -6,7 +6,7 @@ module.exports = {
   deploy: {
     production: {
       user: 'ubuntu',
-      host: 'ec2-18-218-41-176.us-east-2.compute.amazonaws.com',
+      host: 'ec2-18-218-4-34.us-east-2.compute.amazonaws.com',
       key: '~/.ssh/lash-server.pem',
       ref: 'origin/master',
       repo: 'git@github.com:cantwait/lash-backend.git',
