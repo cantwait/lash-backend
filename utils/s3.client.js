@@ -34,7 +34,7 @@ module.exports.sendMail = function(to, msg, subject, fromMail) {
     Source: fromMail, /* required */
     ReplyToAddresses: [ ],
   };
-  ses.verifyEmailAddress(to, function(err,data) {
+  ses.verifyEmailAddress({ EmailAddress: to }, function(err,data) {
     if (err) return console.log('error verifying email: %s, stack: %s', err, err.stack);
     ses.sendEmail(params, function(err, data) {
       if(err) return console.error('error: %s, stack: %s', err, err.stack);
