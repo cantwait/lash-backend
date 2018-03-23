@@ -96,6 +96,7 @@ userSchema.pre('save', async function save(next) {
     mailClient.sendPassword(this.email, pass);
     return next();
   } catch (error) {
+    console.log('error user pre save hook: %s', error);
     return next(error);
   }
 });
