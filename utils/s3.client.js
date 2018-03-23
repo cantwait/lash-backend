@@ -26,8 +26,8 @@ module.exports.send = function(to, msg, subject, fromMail) {
         bodyHtml: encodeURIComponent(msg)
       }
     })
-    .then(res => console.log('Response: %s',res))
-    .catch(err => console.error('Error: %s',err));
+    .then(res => console.log('Response: %s',JSON.stringify(res)))
+    .catch(err => console.error('Error: %s',JSON.stringify(err)));
 };
 
 module.exports.uploadFileS3 = function(b64, id) {
