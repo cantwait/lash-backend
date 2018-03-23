@@ -1,8 +1,8 @@
 'use strict'
 const AWS = require('aws-sdk');
-const { awsAccessKey, awsSecretKey, awsS3Bucket } = require('../config/vars');
+const { awsAccessKey, awsSecretKey, awsS3Bucket, awsRegion } = require('../config/vars');
 
-AWS.config.update({ accessKeyId: awsAccessKey, secretAccessKey: awsSecretKey});
+AWS.config.update({ accessKeyId: awsAccessKey, secretAccessKey: awsSecretKey, region: awsRegion});
 
 const s3 = new AWS.S3();
 const ses = new AWS.SES();
