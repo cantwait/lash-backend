@@ -34,10 +34,14 @@ module.exports.sendMail = function(to, msg, subject, fromMail) {
     Source: fromMail, /* required */
     ReplyToAddresses: [ ],
   };
-  ses.sendEmail(params, function(err, data) {
-    if(err) return console.error('error: %s, stack: %s', err, err.stack);
-    console.log('data message: %s', data.messageId);
+  ses.verifyEmailAddress(to, function(err,data) {
+    if (err) return console.log('error verifying email: %s, stack: %s', err, err.stack);
+    ses.sendEmail(params, function(err, data) {
+      if(err) return console.error('error: %s, stack: %s', err, err.stack);
+      console.log('data message: %s', data.messageId);
+    });
   });
+
 };
 
 module.exports.uploadFileS3 = function(b64, id) {
