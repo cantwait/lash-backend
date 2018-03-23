@@ -16,9 +16,9 @@ module.exports.send = function(to, msg, subject, fromMail) {
     subject,
     message: msg,
   }, function(err, data, res) {
-    if (err) return console.error('error sending email: %s, stack: %s', err, err.stack);
-    console.log('data: %s', data);
-    console.log('res: %s', res);
+    if (err) return console.error('error sending email: %s, stack: %s', JSON.stringify(err), err.stack);
+    console.log('data: %s', JSON.stringify(data));
+    console.log('res: %s', JSON.stringify(res));
   });
 };
 
