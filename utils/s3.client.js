@@ -12,6 +12,7 @@ AWS.config.update({ accessKeyId: awsAccessKey, secretAccessKey: awsSecretKey, re
 const s3 = new AWS.S3();
 
 module.exports.send = function(to, msg, subject, fromMail) {
+  console.log('sending pwd!');
   const body = {
     from: fromMail,
     to,
@@ -20,9 +21,9 @@ module.exports.send = function(to, msg, subject, fromMail) {
   };
   client.mailer.send(body, function(err, result) {
     if (err) {
-      return console.error(err);
+      return console.error('Error: %s', err);
     }
-    console.log(result);
+    console.log('Result: %s', result);
   });
 };
 
