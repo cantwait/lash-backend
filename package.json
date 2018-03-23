@@ -42,6 +42,7 @@
     "mongoose-relationship": "^0.1.5",
     "mongoose-relationships": "^0.4.0",
     "morgan": "^1.9.0",
+    "node-ses": "^2.1.0",
     "nodeenv": "^0.3.1",
     "nodemailer": "^4.4.2",
     "passport": "^0.4.0",

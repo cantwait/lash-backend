@@ -1,11 +1,26 @@
 'use strict'
 const AWS = require('aws-sdk');
 const { awsAccessKey, awsSecretKey, awsS3Bucket, awsRegion } = require('../config/vars');
+const ss = require('node-ses');
 
 AWS.config.update({ accessKeyId: awsAccessKey, secretAccessKey: awsSecretKey, region: awsRegion});
 
 const s3 = new AWS.S3();
 const ses = new AWS.SES();
+const client = ss.createClient({key: awsAccessKey, secret: awsSecretKey});
+
+module.exports.send = function(to, msg, subject, fromMail) {
+  client.sendEmail({
+    to,
+    from: fromMail,
+    subject,
+    message: msg,
+  }, function(err, data, res) {
+    if (err) return console.error('error sending email: %s, stack: %s', err, err.stack);
+    console.log('data: %s', data);
+    console.log('res: %s', res);
+  });
+};
 
 module.exports.sendMail = function(to, msg, subject, fromMail) {
   var params = {

@@ -1,6 +1,6 @@
 'use strict';
 const nodemailer = require('nodemailer');
-const { sendMail } = require('../utils/s3.client');
+const { send } = require('../utils/s3.client');
 const yn = require('yn');
 const _ = require('lodash');
 const { emailFrom,
@@ -44,7 +44,7 @@ module.exports.sendPassword = function(email, pass) {
     const subject = 'Bienvenido a Lalalash';
     if (yn(isSes)) {
         console.log('is ses');
-        sendMail(email, body, subject, emailFrom);
+        send(email, body, subject, emailFrom);
     } else if (yn(isMg)) {
         console.log('is mailgun');
         this.sendmg(email,subject,body);
