@@ -157,12 +157,16 @@ exports.list = async (req, res, next) => {
  * Delete user
  * @public
  */
-exports.remove = (req, res, next) => {
-  const { user } = req.locals;
-
+exports.remove = async (req, res, next) => {
+  const userId = req.params.userId;
+  const user = await User.findById(userId);
+  if (!user) {
+	  return res.status(404).end();
+  }
   user.remove()
-    .then(() => res.status(httpStatus.NO_CONTENT).end())
-    .catch(e => next(e));
+	.then(()=> res.status(httpStatus.NO_CONTENT).end())
+	.catch(e => next(e));
+   
 };
 
 exports.protected = (req,res,next) => {
