@@ -12,7 +12,8 @@ module.exports.send = function(to, msg, subject, fromMail) {
   const body = encodeURI(msg);
   const fromM = emailFrom;
   const fromN = emailName;
-  const url = 'https://api.elasticemail.com/v2/email/send?apikey='+elasticKey+'&subject='+subject+'&from='+fromM+'&fromName='+fromN+'&to='+to+'&bodyHtml='+body;
+  const subj = encodeURI(subject);
+  const url = 'https://api.elasticemail.com/v2/email/send?apikey='+elasticKey+'&subject='+subj+'&from='+fromM+'&fromName='+fromN+'&to='+to+'&bodyHtml='+body;
   console.log('sending email: %s', url);
   axios.get(url)
     .then(res => console.log('Response: %s',JSON.stringify(res)))
