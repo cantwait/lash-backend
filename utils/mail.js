@@ -1,5 +1,6 @@
 'use strict';
 const nodemailer = require('nodemailer');
+const { sendMail } = require('../utils/mail');
 const yn = require('yn');
 const _ = require('lodash');
 const { emailFrom,
@@ -15,7 +16,8 @@ const { emailFrom,
         uiUrl,
         mgApiKey,
 	mgDomain,
-        isMg } = require('../config/vars');
+        isMg,
+        isSes } = require('../config/vars');
 const mailgun = require('mailgun-js')({ apiKey: mgApiKey,domain: mgDomain});
 
 module.exports.sendmg = function(email, subject, body) {
@@ -27,7 +29,7 @@ module.exports.sendmg = function(email, subject, body) {
         html: body,
       };
       mailgun.messages().send(data, function (error, body) {
-	console.log('Error: %s',JSON.stringify(error)); 
+	console.log('Error: %s',JSON.stringify(error));
 	console.log('Body: %s',body);
       });
 };
@@ -40,7 +42,9 @@ module.exports.sendPassword = function(email, pass) {
         <p>Inicie sesión <a target="_blank" href=${uiUrl}>aca</a></p>
     `;
     const subject = 'Bienvenido a Lalalash';
-    if (yn(isMg)) {
+    if (yn(isSes)) {
+        sendMail(email, body, subject, emailFrom);
+    } else if (yn(isMg)) {
         this.sendmg(email,subject,body);
     } else {
         this.send(email,subject,body,true);

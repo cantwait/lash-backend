@@ -5,6 +5,39 @@ const { awsAccessKey, awsSecretKey, awsS3Bucket } = require('../config/vars');
 AWS.config.update({ accessKeyId: awsAccessKey, secretAccessKey: awsSecretKey});
 
 const s3 = new AWS.S3();
+const ses = new AWS.SES();
+
+module.exports.sendMail = function(to, msg, subject, fromMail) {
+  var params = {
+    Destination: { /* required */
+      CcAddresses: [ ],
+      ToAddresses: [
+        to,
+      ]
+    },
+    Message: { /* required */
+      Body: { /* required */
+        Html: {
+         Charset: "UTF-8",
+         Data: msg,
+        },
+        // Text: {
+        //  Charset: "UTF-8",
+        //  Data: "TEXT_FORMAT_BODY"
+        // }
+       },
+       Subject: {
+        Charset: 'UTF-8',
+        Data: subject
+       }
+      },
+    Source: fromMail, /* required */
+    ReplyToAddresses: [ ],
+  };
+  ses.sendEmail(params)
+    .then(data => console.log(data.messageId))
+    .catch(err => console.error(err, err.stack));
+};
 
 module.exports.uploadFileS3 = function(b64, id) {
   const base64Data = new Buffer(b64.replace(/^data:image\/\w+;base64,/, ""), 'base64')
