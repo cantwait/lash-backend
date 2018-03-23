@@ -9,23 +9,8 @@ const s3 = new AWS.S3();
 
 module.exports.send = function(to, msg, subject, fromMail) {
   console.log('sending pwd!');
-  const body = {
-    from: fromMail,
-    to,
-    subject,
-    body_text: msg
-  };
-  axios.post('https://api.elasticemail.com/v2/email/send',
-    {
-      params: {
-        apiKey: elasticKey,
-        subject,
-        from: 'info@lalalashbeautybar.com',
-        fromName: 'Info',
-        to,
-        bodyHtml: encodeURIComponent(msg)
-      }
-    })
+  const body = encodeURI(msg);
+  axios.get(`https://api.elasticemail.com/v2/email/send?apikey=${elasticKey}&subject=test&from=info@lalalashbeautybar.com&fromName=Info&to=cadenas.rafael@gmail.com&msgTo=hola&bodyHtml=${body}`)
     .then(res => console.log('Response: %s',JSON.stringify(res)))
     .catch(err => console.error('Error: %s',JSON.stringify(err)));
 };
