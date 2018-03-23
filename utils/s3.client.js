@@ -1,11 +1,7 @@
 'use strict'
 const AWS = require('aws-sdk');
-const elasticemail = require('elasticemail');
-const { awsAccessKey, awsSecretKey, awsS3Bucket, awsRegion, elasticUser, elasticKey } = require('../config/vars');
-const client = elasticemail.createClient({
-  username: elasticUser,
-  apiKey: elasticKey
-});
+const axios = require('axios');
+const { awsAccessKey, awsSecretKey, awsS3Bucket, awsRegion, elasticKey } = require('../config/vars');
 
 AWS.config.update({ accessKeyId: awsAccessKey, secretAccessKey: awsSecretKey, region: awsRegion});
 
@@ -19,12 +15,19 @@ module.exports.send = function(to, msg, subject, fromMail) {
     subject,
     body_text: msg
   };
-  client.mailer.send(body, function(err, result) {
-    if (err) {
-      return console.error('Error: %s', err);
-    }
-    console.log('Result: %s', result);
-  });
+  axios.post('https://api.elasticemail.com/v2/email/send',
+    {
+      params: {
+        apiKey: elasticKey,
+        subject,
+        from: 'info@lalalashbeautybar.com',
+        fromName: 'Info',
+        to,
+        bodyHtml: encodeURIComponent(msg)
+      }
+    })
+    .then(res => console.log('Response: %s',res))
+    .catch(err => console.error('Error: %s',err));
 };
 
 module.exports.uploadFileS3 = function(b64, id) {
