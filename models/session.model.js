@@ -97,6 +97,16 @@ const sessionSchema = new mongoose.Schema({
     min: 0,
     default: 0,
   },
+  itbms: {
+    type: Float,
+    min: 0,
+    default: 0,
+  },
+  subtotal: {
+    type: Float,
+    min: 0,
+    default: 0,
+  },
   rating: {
     type: Number
   },
