@@ -62,7 +62,7 @@ router
    * @apiError (Unauthorized 401)  Unauthorized     Only authenticated Customers can create the data
    * @apiError (Forbidden 403)     Forbidden        Only admins can create the data
    */
-  .post(authorize(LOGGED_USER), validate(createCustomer), controller.create);
+  .post(authorize(), validate(createCustomer), controller.create);
 
 router
   .route('/search')
@@ -71,7 +71,7 @@ router
 router
   .route('/:customerId/sessions')
     .get(authorize(ADMIN),validate(listSessionsByCustomer),controller.listSessionsByCustomer);
-	
+
 
 router
   .route('/:customerId')
