@@ -190,7 +190,7 @@ sessionSchema.post('remove', async (s, next) => {
 sessionSchema.method({
   transform() {
     const transformed = {};
-    const fields = ['id', 'services', 'owner', 'total', 'rating', 'customer', 'state', 'endedAt','createdAt','comment'];
+    const fields = ['id', 'services', 'owner', 'total', 'rating', 'customer', 'state', 'endedAt','createdAt','comment','subtotal','itbms'];
 
     fields.forEach((field) => {
       transformed[field] = this[field];

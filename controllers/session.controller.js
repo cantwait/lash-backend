@@ -35,6 +35,8 @@ exports.update = async (req, res, next) => {
     rating: req.body.rating,
     customer: req.body.customer,
     state: req.body.state,
+    subtotal: req.body.subtotal,
+    itbms: req.body.itbms
   };
   const session = await Session.findById(query);
   if (!session) {
@@ -45,6 +47,8 @@ exports.update = async (req, res, next) => {
   session.comment = update.comment;
   session.services = update.services;
   session.owner = update.owner;
+  session.subtotal = update.subtotal ? update.subtotal : 0;
+  session.itbms = update.itbms ? update.itbms : 0;
   session.total = update.total  ? update.total : 0;
   session.rating = update.rating;
   session.customer = update.customer;
