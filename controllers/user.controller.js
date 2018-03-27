@@ -166,7 +166,6 @@ exports.remove = async (req, res, next) => {
   user.remove()
 	.then(()=> res.status(httpStatus.NO_CONTENT).end())
 	.catch(e => next(e));
-   
 };
 
 exports.protected = (req,res,next) => {
