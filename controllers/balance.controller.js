@@ -65,7 +65,7 @@ exports.list = async (req, res, next) => {
  */
 exports.remove =  async (req, res, next) => {
   try {
-    const bal = await Balance.findById(req.params.catId);
+    const bal = await Balance.findById(req.params.balId);
     if(!bal) {
       return next(new Error('Balance does not exist!'));
     }
