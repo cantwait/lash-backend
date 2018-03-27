@@ -72,6 +72,7 @@ exports.remove =  async (req, res, next) => {
     bal.remove();
     res.status(httpStatus.NO_CONTENT).end();
   } catch (error) {
+    console.error('Error: %s', error); 
     return next(error);
   }
 };
