@@ -3,6 +3,7 @@ const { omit } = require('lodash');
 const Session = require('../models/session.model');
 const { handler: errorHandler } = require('../middlewares/error');
 
+const ITBMS = 0.07;
 
 /**
  * Create new Session
@@ -31,12 +32,13 @@ exports.update = async (req, res, next) => {
     comment: req.body.comment,
     services: req.body.services,
     owner: req.body.owner,
-    total: req.body.total,
+    // total: req.body.total,
     rating: req.body.rating,
     customer: req.body.customer,
     state: req.body.state,
     subtotal: req.body.subtotal,
-    itbms: req.body.itbms
+    // itbms: req.body.itbms,
+    isTax: req.body.isTax
   };
   const session = await Session.findById(query);
   if (!session) {
@@ -47,9 +49,10 @@ exports.update = async (req, res, next) => {
   session.comment = update.comment;
   session.services = update.services;
   session.owner = update.owner;
+  session.isTax = update.isTax;
   session.subtotal = update.subtotal ? update.subtotal : 0;
-  session.itbms = update.itbms ? update.itbms : 0;
-  session.total = update.total  ? update.total : 0;
+  session.itbms = update.isTax ? (update.subtotal * ITBMS) : 0;
+  session.total = update.isTax  ? (session.subtotal + session.itbms) : 0;
   session.rating = update.rating;
   session.customer = update.customer;
   session.state = update.state;
