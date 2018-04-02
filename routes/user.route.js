@@ -102,6 +102,10 @@ router
     .post(authorize(), validate(resetPwd),controller.resetPwd);
 
 router
+  .route('/:userId/reset')
+    .get(authorize(ADMIN), controller.reset);
+
+router
   .route('/:userId/sessions')
     .get(authorize(ADMIN), controller.sessionsByUser);
 

@@ -53,6 +53,10 @@ router
   .post(authorize(), validate(createSession), controller.create);
 
 router
+  .route('/balance/:date')
+    .get(authorize(), controller.balance);
+
+router
   .route('/:sessId')
   /**
    * @api {patch} v1/sessions/:sessId Update Session

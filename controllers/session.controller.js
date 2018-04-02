@@ -20,6 +20,17 @@ exports.create = async (req, res, next) => {
   }
 };
 
+exports.balance = async (req, res, next) => {
+  try {
+    const date = req.params.date;
+    const sessions = await Session.listBalance(date);
+    const transformedSessions = sessions.map(s => s.transform());
+    res.json(transformedSessions);
+  } catch (e) {
+    next(e);
+  }
+};
+
 /**
  * Update existing Session
  * @public

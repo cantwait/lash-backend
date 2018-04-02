@@ -8,6 +8,7 @@ const APIError = require('../utils/api.error');
 const cloudifyUtil = require('../utils/cloudinary.client');
 const Customer = require('./customer.model');
 const { push } = require('../utils/pusher-cli');
+const { queueChannel, onRemovedQueueEvt, onNewQueueEvt } = require('../config/vars');
 
 /**
  * Customer Queue Schema
@@ -49,7 +50,7 @@ queueSchema.post('save', async (q, next) => {
       id: q.id,
       customer: await Customer.findById(q.customer),
     }
-    push('queues', 'onNewQueue', queue);
+    push(queueChannel, onNewQueueEvt, queue);
     return next();
   } catch(e) {
     console.log(e);
@@ -60,7 +61,7 @@ queueSchema.post('save', async (q, next) => {
 queueSchema.post('remove', async (q, next) => {
   try {
     console.log('queue: %s', q);
-    push('queues', 'onQueueRemoved', q.id);
+    push(queueChannel, onRemovedQueueEvt, q.id);
     return next();
   } catch(e) {
     return next(e);

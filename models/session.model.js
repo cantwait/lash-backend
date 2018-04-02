@@ -2,14 +2,14 @@ const mongoose = require('mongoose');
 const DateOnly = require('mongoose-dateonly')(mongoose);
 const httpStatus = require('http-status');
 const { omitBy, isNil } = require('lodash');
-const bcrypt = require('bcryptjs');
-const moment = require('moment-timezone');
+const { toUTC, dateTime } = require('../utils/time');
 const APIError = require('../utils/api.error');
 const Float = require('mongoose-float').loadType(mongoose, 3);
 const { ServiceSchema } = require('../models/service.model');
 const fs = require('fs');
 const { push } = require('../utils/pusher-cli');
 const Balance = require('./balance.model');
+const { sessionChannel, onRemovedSessionEvt, onSessionEvt, env } = require('../config/vars');
 
 const INCOME = 'income';
 
@@ -154,7 +154,7 @@ sessionSchema.post('save', async (s, next) => {
   try {
     if (s.state === 'closed'){
       console.log('finishing session status: %s', s.state);
-      push('sessions', 'onSessionRemove',s.id);
+      push(sessionChannel, onRemovedSessionEvt,s.id);
       const balance = new Balance({
         desc: `Entrada de dinero por sesion de cliente: ${s.customer.name}`,
         amount: s.total,
@@ -162,8 +162,9 @@ sessionSchema.post('save', async (s, next) => {
       });
       balance.save();
     } else {
+      console.log('channel: %s, event: %s, env: %s', sessionChannel, onSessionEvt, env);
       console.log('on post save: %s',JSON.stringify(s));
-      push('sessions', 'onSession', s.transform());
+      push(sessionChannel, onSessionEvt, s.transform());
     }
     return next();
   } catch(e) {
@@ -178,7 +179,7 @@ sessionSchema.post('save', async (s, next) => {
 sessionSchema.post('remove', async (s, next) => {
 	try{
 		console.log('session post remove hook...!');
-		push('sessions','onSessionRemove', s.id);
+		push(sessionChannel,onRemovedSessionEvt, s.id);
 		return next();
 	}catch (e) {
 		console.log('Error on session post remove hook: %s', JSON.stringify(e));
@@ -207,6 +208,15 @@ sessionSchema.method({
  * Statics
  */
 sessionSchema.statics = {
+
+  listBalance(date) {
+    const gte = toUTC(dateTime(date, '07:00:00'));
+    const lte = toUTC(dateTime(date, '23:59:59'));
+    console.log('querying sessions from: %s, to: %s', gte, lte);
+    return this.find({ createdAt: { $gte: gte, $lte: lte}})
+      .sort({ createdAt: -1 })
+      .exec();
+  },
 
   /**
    * List sessions in descending order of 'createdAt' timestamp.

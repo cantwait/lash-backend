@@ -50,4 +50,10 @@ module.exports = {
   pusherCluster: process.env.PUSHER_CLUSTER,
   elasticUser: process.env.ELASTIC_USERNAME,
   elasticKey: process.env.ELASTIC_KEY,
+  sessionChannel: process.env.PUSHER_SESSION_CHANNEL,
+  queueChannel: process.env.PUSHER_QUEUE_CHANNEL,
+  onSessionEvt: process.env.PUSHER_ON_SESSION,
+  onRemovedSessionEvt: process.env.PUSHER_ON_SESSION_REMOVE,
+  onRemovedQueueEvt: process.env.PUSHER_ON_QUEUE_REMOVED,
+  onNewQueueEvt: process.env.PUSHER_ON_NEW_QUEUE,
 };

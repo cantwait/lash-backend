@@ -34,15 +34,14 @@ exports.load = async (req, res, next, id) => {
  * @param {*} res
  * @param {*} next
  */
-exports.resetPwd = async (req, res, next) => {
+exports.reset = async (req, res, next) => {
   try {
     const user = await User.findById(req.params.userId);
     if (!user) {
       return next(new Error('User does not exist!'));
     }
-
-
-
+    user.save();
+    res.status(204).end();
   } catch (e) {
     return next(e);
   }
