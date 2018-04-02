@@ -29,13 +29,33 @@ exports.load = async (req, res, next, id) => {
 };
 
 /**
+ * Reset the password for a given userId
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ */
+exports.resetPwd = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.userId);
+    if (!user) {
+      return next(new Error('User does not exist!'));
+    }
+
+
+
+  } catch (e) {
+    return next(e);
+  }
+};
+
+/**
  * List all sessions by user
  */
 exports.sessionsByUser = async (req,res,next) => {
 
- console.log('listong sessions by user id: %s', req.params.userId);
+ console.log('listing sessions by user id: %s', req.params.userId);
  try {
-   const sessions = await Session.aggregate([{ $match: { 'services.responsible.id': mongoose.Types.ObjectId(req.params.userId)}},{$unwind: '$services'}]);
+   const sessions = await Session.aggregate([{$unwind: '$services'},{ $match: { 'services.responsible.id': mongoose.Types.ObjectId(req.params.userId)}}]);
    //const transformedSessions = sessions.map(session => session.transform());
    res.json(sessions);
  } catch (e) {
