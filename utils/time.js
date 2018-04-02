@@ -2,7 +2,7 @@
 const moment = require('moment-timezone');
 
 exports.toUTC = function(date) {
-  const utc = moment.tz(date, 'UTC').format();
+  const utc = moment(date).tz('UTC').format();
   console.log('utc: %s', utc);
   return utc;
 };
