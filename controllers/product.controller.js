@@ -91,9 +91,9 @@ exports.update =  async (req, res, next) => {
 exports.list = async (req, res, next) => {
   try {
     const products = await Product.list(req.query);
-    const transformedProds = products.map(p => { 
+    const transformedProds = products.map(p => {
 	    const pTrans = p.transform();
-	    const cat = pTrans.category.transform(); 
+	    const cat = pTrans.category.transform();
 	    pTrans.category = cat;
 	   return  pTrans;
     });

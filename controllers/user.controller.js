@@ -8,6 +8,7 @@ const cloudinaryUtil = require('../utils/cloudinary.client');
 const { LOGGED_USER } = require('../middlewares/auth');
 const Session = require('../models/session.model');
 const  mongoose  = require('mongoose');
+const { toUTC, dateTime } = require('../utils/time');
 
 /**
  * Load user and append to req.
@@ -51,10 +52,27 @@ exports.reset = async (req, res, next) => {
  * List all sessions by user
  */
 exports.sessionsByUser = async (req,res,next) => {
+ console.log('listing sessions by user id: %s, from: %s, to: %s', req.params.userId, req.query.from, req.query.to);
+ const fromDateStr = req.query.from;
+ const toDateStr = req.query.to;
 
- console.log('listing sessions by user id: %s', req.params.userId);
+ const match = {
+  'services.responsible.id': mongoose.Types.ObjectId(req.params.userId)
+ }
+
+ if (fromDateStr !== '' && toDateStr !== '') {
+   console.log('from: %s, to: %s', fromDateStr, toDateStr);
+  const gte = toUTC(dateTime(fromDateStr, '07:00:00'));
+  const lte = toUTC(dateTime(toDateStr, '23:59:59'));
+  match.createdAt = {};
+  console.log('gte: %s', gte);
+  match.createdAt.$gte = new Date(gte);
+  console.log('lte: %s', lte);
+  match.createdAt.$lte = new Date(lte);
+ }
+
  try {
-   const sessions = await Session.aggregate([{$unwind: '$services'},{ $match: { 'services.responsible.id': mongoose.Types.ObjectId(req.params.userId)}}]);
+   const sessions = await Session.aggregate([{$unwind: '$services'},{ $match: match }]);
    //const transformedSessions = sessions.map(session => session.transform());
    res.json(sessions);
  } catch (e) {
