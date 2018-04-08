@@ -65,7 +65,6 @@ exports.sessionsByUser = async (req,res,next) => {
     console.log('from: %s, to: %s', fromDateStr, toDateStr);
     let gte = null;
     let lte = null;
-
     if (env === 'production') {
       gte = moment(dateTime(fromDateStr, '07:00:00')).add(5, 'hours').format();
       lte = moment(dateTime(toDateStr, '23:59:59')).add(5,'hours').format();

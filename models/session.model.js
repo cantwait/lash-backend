@@ -10,6 +10,7 @@ const fs = require('fs');
 const { push } = require('../utils/pusher-cli');
 const Balance = require('./balance.model');
 const { sessionChannel, onRemovedSessionEvt, onSessionEvt, env } = require('../config/vars');
+const moment = require('moment-timezone');
 
 const INCOME = 'income';
 
@@ -214,7 +215,7 @@ sessionSchema.statics = {
     let gte = null;
     let lte = null;
     console.log('about to query balance...');
-    if (env === 'production') {
+    if (env === 'development') {
       gte = moment(dateTime(date, '07:00:00')).add(5, 'hours').format();
       lte = moment(dateTime(date, '23:59:59')).add(5,'hours').format();
     } else {
