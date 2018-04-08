@@ -215,7 +215,7 @@ sessionSchema.statics = {
     let gte = null;
     let lte = null;
     console.log('about to query balance...');
-    if (env === 'development') {
+    if (env === 'production') {
       gte = moment(dateTime(date, '07:00:00')).add(5, 'hours').format();
       lte = moment(dateTime(date, '23:59:59')).add(5,'hours').format();
     } else {
