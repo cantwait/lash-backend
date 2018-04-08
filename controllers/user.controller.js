@@ -63,8 +63,8 @@ exports.sessionsByUser = async (req,res,next) => {
 
  if (fromDateStr !== '' && toDateStr !== '') {
     console.log('from: %s, to: %s', fromDateStr, toDateStr);
-    const gte = null;
-    const lte = null;
+    let gte = null;
+    let lte = null;
 
     if (env === 'production') {
       gte = moment(dateTime(fromDateStr, '07:00:00')).add(5, 'hours').format();

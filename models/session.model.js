@@ -211,8 +211,8 @@ sessionSchema.statics = {
 
   listBalance(date) {
 
-    const gte = null;
-    const lte = null;
+    let gte = null;
+    let lte = null;
 
     if (env === 'production') {
       gte = moment(dateTime(date, '07:00:00')).add(5, 'hours').format();
