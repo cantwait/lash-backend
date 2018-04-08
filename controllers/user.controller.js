@@ -61,14 +61,22 @@ exports.sessionsByUser = async (req,res,next) => {
  }
 
  if (fromDateStr !== '' && toDateStr !== '') {
-   console.log('from: %s, to: %s', fromDateStr, toDateStr);
-  const gte = toUTC(dateTime(fromDateStr, '07:00:00'));
-  const lte = toUTC(dateTime(toDateStr, '23:59:59'));
-  match.createdAt = {};
-  console.log('gte: %s', gte);
-  match.createdAt.$gte = new Date(gte);
-  console.log('lte: %s', lte);
-  match.createdAt.$lte = new Date(lte);
+    console.log('from: %s, to: %s', fromDateStr, toDateStr);
+    const gte = null;
+    const lte = null;
+
+    if (env === 'production') {
+      gte = moment(dateTime(date, '07:00:00')).add(5, 'hours').format();
+      lte = moment(dateTime(date, '23:59:59')).add(1, 'days').add(5,'hours').format();
+    } else {
+      gte = toUTC(dateTime(date, '07:00:00'));
+      lte = toUTC(dateTime(date, '23:59:59'));
+    }
+    match.createdAt = {};
+    console.log('gte: %s', gte);
+    match.createdAt.$gte = new Date(gte);
+    console.log('lte: %s', lte);
+    match.createdAt.$lte = new Date(lte);
  }
 
  try {

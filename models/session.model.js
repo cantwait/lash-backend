@@ -210,8 +210,17 @@ sessionSchema.method({
 sessionSchema.statics = {
 
   listBalance(date) {
-    const gte = toUTC(dateTime(date, '07:00:00'));
-    const lte = toUTC(dateTime(date, '23:59:59'));
+
+    const gte = null;
+    const lte = null;
+
+    if (env === 'production') {
+      gte = moment(dateTime(date, '07:00:00')).add(5, 'hours').format();
+      lte = moment(dateTime(date, '23:59:59')).add(1, 'days').add(5,'hours').format();
+    } else {
+      gte = toUTC(dateTime(date, '07:00:00'));
+      lte = toUTC(dateTime(date, '23:59:59'));
+    }
     console.log('querying sessions from: %s, to: %s', gte, lte);
     return this.find({ createdAt: { $gte: gte, $lte: lte}})
       .sort({ createdAt: -1 })
