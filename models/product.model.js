@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const httpStatus = require('http-status');
-const { omitBy, isNil } = require('lodash');
+const { omitBy, isNil, trim } = require('lodash');
 const moment = require('moment-timezone');
 const Float = require('mongoose-float').loadType(mongoose, 3);
 const fs = require('fs');
@@ -121,8 +121,15 @@ productSchema.statics = {
   list({
     page = 1, perPage = 30, name,
   }) {
-    const options = omitBy({ name }, isNil);
+    const options = omitBy({ name }, (v) => {
+      return isNil(v) || trim(v).length === 0;
+    });
 
+    if (options.name) {
+      options.name = new RegExp('^.*'+options.name+'.*$', "i");
+    }
+
+    console.log('options: %s', JSON.stringify(options));
     return this.find(options)
       .populate('category')
       .sort({ createdAt: -1 })

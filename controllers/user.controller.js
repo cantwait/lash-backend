@@ -69,8 +69,8 @@ exports.sessionsByUser = async (req,res,next) => {
       gte = moment(dateTime(fromDateStr, '07:00:00')).add(5, 'hours').format();
       lte = moment(dateTime(toDateStr, '23:59:59')).add(5,'hours').format();
     } else {
-      gte = toUTC(dateTime(date, '07:00:00'));
-      lte = toUTC(dateTime(date, '23:59:59'));
+      gte = toUTC(dateTime(fromDateStr, '07:00:00'));
+      lte = toUTC(dateTime(toDateStr, '23:59:59'));
     }
     match.createdAt = {};
     console.log('gte: %s', gte);
