@@ -158,7 +158,7 @@ sessionSchema.post('save', async (s, next) => {
       push(sessionChannel, onRemovedSessionEvt,s.id);
       const balance = new Balance({
         desc: `Entrada de dinero por sesion de cliente: ${s.customer.name}`,
-        amount: s.total,
+        amount: s.total > 0 ? s.total : s.subtotal,
         mode: INCOME,
       });
       balance.save();

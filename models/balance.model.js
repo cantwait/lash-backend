@@ -18,7 +18,6 @@ const balanceSchema = new mongoose.Schema({
   desc: {
     type: String,
     maxlength: 128,
-    unique: true,
     index: true,
     trim: true,
   },
