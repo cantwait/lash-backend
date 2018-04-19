@@ -76,6 +76,11 @@ const UserSchema = new mongoose.Schema({
 const states = ['opened', 'closed'];
 
 /**
+ * Transaction Type const
+ */
+const types = ['cash','card'];
+
+/**
  * Session Schema
  * @private
  */
@@ -110,6 +115,10 @@ const sessionSchema = new mongoose.Schema({
   },
   rating: {
     type: Number
+  },
+  transactionType: {
+    type: String,
+    enum: types,
   },
   customer: CustomerSchema,
   state: {
@@ -195,7 +204,7 @@ sessionSchema.post('remove', async (s, next) => {
 sessionSchema.method({
   transform() {
     const transformed = {};
-    const fields = ['id', 'services', 'owner', 'total', 'rating', 'customer', 'state', 'endedAt','createdAt','comment','subtotal','itbms','isTax'];
+    const fields = ['id', 'services', 'owner', 'total', 'rating', 'customer', 'state', 'endedAt','createdAt','comment','subtotal','itbms','isTax','transactionType'];
 
     fields.forEach((field) => {
       transformed[field] = this[field];

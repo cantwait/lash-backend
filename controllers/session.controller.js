@@ -49,7 +49,8 @@ exports.update = async (req, res, next) => {
     state: req.body.state,
     subtotal: req.body.subtotal,
     // itbms: req.body.itbms,
-    isTax: req.body.isTax
+    isTax: req.body.isTax,
+    transactionType: req.body.transactionType
   };
   const session = await Session.findById(query);
   if (!session) {
@@ -67,6 +68,7 @@ exports.update = async (req, res, next) => {
   session.rating = update.rating;
   session.customer = update.customer;
   session.state = update.state;
+  session.transactionType = update.transactionType;
   const pSession = await session.save();
   res.json(pSession.transform());
 };
