@@ -110,7 +110,7 @@ exports.remove =  async (req, res, next) => {
  */
 exports.getProductsPerCat = async (req, res, next) => {
   try {
-    const prods = await Product.find({ category: req.params.catId });
+    const prods = await Product.find({ category: req.params.catId, active: true });
     const transformedProds = prods.map(p => p.transform());
     res.json(transformedProds);
   } catch(e) {

@@ -42,6 +42,10 @@ const productSchema = new mongoose.Schema({
   generateFee: {
     type: Boolean
   },
+  acive: {
+    type: Boolean,
+    default: true,
+  },
 }, {
   timestamps: true,
 });
