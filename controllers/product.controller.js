@@ -75,6 +75,7 @@ exports.update =  async (req, res, next) => {
     specs: req.body.specs,
     offer: req.body.offer,
     generateFee: req.body.generateFee,
+    active: req.body.active,
   };
 	const options = { new: true };
    const uP = await Product.findOneAndUpdate(query,update,options).populate('category');
