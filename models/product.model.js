@@ -42,7 +42,7 @@ const productSchema = new mongoose.Schema({
   generateFee: {
     type: Boolean
   },
-  acive: {
+  active: {
     type: Boolean,
     default: true,
   },
