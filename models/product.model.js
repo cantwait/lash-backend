@@ -100,7 +100,7 @@ productSchema.post('remove', async (next) => {
 productSchema.method({
   transform() {
     const transformed = {};
-    const fields = ['id', 'name', 'description', 'category', 'price', 'createdAt', 'specs','offer','generateFee'];
+    const fields = ['id', 'name', 'description', 'category', 'price', 'createdAt', 'specs','offer','generateFee', 'active'];
 
     fields.forEach((field) => {
       transformed[field] = this[field];
