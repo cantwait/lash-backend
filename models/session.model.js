@@ -128,6 +128,9 @@ const sessionSchema = new mongoose.Schema({
   },
   isTax: {
     type: Boolean,
+  },
+  discount: {
+    type: Number
   }
 }, {
   timestamps: true,
@@ -204,7 +207,7 @@ sessionSchema.post('remove', async (s, next) => {
 sessionSchema.method({
   transform() {
     const transformed = {};
-    const fields = ['id', 'services', 'owner', 'total', 'rating', 'customer', 'state', 'endedAt','createdAt','comment','subtotal','itbms','isTax','transactionType'];
+    const fields = ['id', 'services', 'owner', 'total', 'rating', 'customer', 'state', 'endedAt','createdAt','comment','subtotal','itbms','isTax','transactionType','discount'];
 
     fields.forEach((field) => {
       transformed[field] = this[field];

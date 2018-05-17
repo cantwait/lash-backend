@@ -50,7 +50,8 @@ exports.update = async (req, res, next) => {
     subtotal: req.body.subtotal,
     // itbms: req.body.itbms,
     isTax: req.body.isTax,
-    transactionType: req.body.transactionType
+    transactionType: req.body.transactionType,
+    discount: req.body.discount,
   };
   const session = await Session.findById(query);
   if (!session) {
@@ -62,7 +63,13 @@ exports.update = async (req, res, next) => {
   session.services = update.services;
   session.owner = update.owner;
   session.isTax = update.isTax;
-  session.subtotal = update.subtotal ? update.subtotal : 0;
+  if (update.discount > 0 && update.subtotal > 0) {
+    session.subtotal = update.subtotal - (update.subtotal * (update.discount / 100));
+  } else if (update.subtotal > 0) {
+    session.subtotal = update.subtotal ? update.subtotal : 0;
+  } else {
+    session.subtotal = 0;
+  }
   session.itbms = update.isTax ? (update.subtotal * ITBMS) : 0;
   session.total = update.isTax  ? (session.subtotal + session.itbms) : 0;
   session.rating = update.rating;
