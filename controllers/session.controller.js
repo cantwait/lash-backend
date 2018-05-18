@@ -2,6 +2,7 @@ const httpStatus = require('http-status');
 const { omit } = require('lodash');
 const Session = require('../models/session.model');
 const { handler: errorHandler } = require('../middlewares/error');
+const sessionService =  require('../services/session.services');
 
 const ITBMS = 0.07;
 
@@ -63,15 +64,14 @@ exports.update = async (req, res, next) => {
   session.services = update.services;
   session.owner = update.owner;
   session.isTax = update.isTax;
-  if (update.discount > 0 && update.subtotal > 0) {
-    session.subtotal = update.subtotal - (update.subtotal * (update.discount / 100));
-  } else if (update.subtotal > 0) {
-    session.subtotal = update.subtotal ? update.subtotal : 0;
-  } else {
-    session.subtotal = 0;
-  }
-  session.itbms = update.isTax ? (update.subtotal * ITBMS) : 0;
-  session.total = update.isTax  ? (session.subtotal + session.itbms) : 0;
+  session.discount = update.discount;
+
+  session.subtotal = await sessionService.recalculatesubTotal(update.services, update.discount);
+
+  session.itbms = update.isTax ? (session.subtotal * ITBMS) : 0;
+
+  session.total = await sessionService.recalculateTotal(update.isTax, session.subtotal, session.itbms);
+
   session.rating = update.rating;
   session.customer = update.customer;
   session.state = update.state;

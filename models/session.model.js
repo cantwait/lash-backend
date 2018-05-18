@@ -130,7 +130,8 @@ const sessionSchema = new mongoose.Schema({
     type: Boolean,
   },
   discount: {
-    type: Number
+    type: Number,
+    default: 0,
   }
 }, {
   timestamps: true,
