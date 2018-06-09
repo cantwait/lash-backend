@@ -7,7 +7,7 @@
     "start": "node ./bin/www",
     "restart": "pm2 startOrRestart ecosystem.config.js",
     "deploy": "pm2 deploy ecosystem.config.js production",
-    "dev": "nodemon ./index.js"
+    "dev": "nodemon"
   },
   "dependencies": {
     "aws-sdk": "^2.205.0",
