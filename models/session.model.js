@@ -249,10 +249,11 @@ sessionSchema.statics = {
    * @returns {Promise<Category[]>}
    */
   list({
-    page = 1, perPage = 30, name
+    page = 1, perPage = 30, name, state = 'opened'
   }) {
     const options = omitBy({ name }, isNil);
-    options.state = 'opened';
+    options.state = state;
+    if (state === 'any') delete options.state;
 
     return this.find(options)
       .sort({ createdAt: -1 })
