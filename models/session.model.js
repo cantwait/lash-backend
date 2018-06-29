@@ -166,19 +166,24 @@ sessionSchema.pre('remove', async (next) => {
  */
 sessionSchema.post('save', async (s, next) => {
   try {
-    if (s.state === 'closed'){
-      console.log('finishing session status: %s', s.state);
-      push(sessionChannel, onRemovedSessionEvt,s.id);
-      const balance = new Balance({
-        desc: `Entrada de dinero por sesion de cliente: ${s.customer.name}`,
-        amount: s.total > 0 ? s.total : s.subtotal,
-        mode: INCOME,
-      });
-      balance.save();
+    if(!s.isCrudUpdate) {
+      if (s.state === 'closed'){
+        console.log('finishing session status: %s', s.state);
+        push(sessionChannel, onRemovedSessionEvt,s.id);
+        const balance = new Balance({
+          desc: `Entrada de dinero por sesion de cliente: ${s.customer.name}`,
+          amount: s.total > 0 ? s.total : s.subtotal,
+          mode: INCOME,
+          sessionId: s._id,
+        });
+        balance.save();
+      } else if (s.state === 'opened') {
+        console.log('channel: %s, event: %s, env: %s', sessionChannel, onSessionEvt, env);
+        console.log('on post save: %s',JSON.stringify(s));
+        push(sessionChannel, onSessionEvt, s.transform());
+      }
     } else {
-      console.log('channel: %s, event: %s, env: %s', sessionChannel, onSessionEvt, env);
-      console.log('on post save: %s',JSON.stringify(s));
-      push(sessionChannel, onSessionEvt, s.transform());
+      console.log('do nothing probably a simple update!');
     }
     return next();
   } catch(e) {
@@ -192,8 +197,13 @@ sessionSchema.post('save', async (s, next) => {
  */
 sessionSchema.post('remove', async (s, next) => {
 	try{
-		console.log('session post remove hook...!');
-		push(sessionChannel,onRemovedSessionEvt, s.id);
+    console.log('session post remove hook...!');
+    push(sessionChannel,onRemovedSessionEvt, s.id);
+    const balance = await Balance.findOne({sessionId: s.id});
+    if (balance) {
+      console.log('removing associated balance: %s', JSON.stringify(balance));
+      balance.remove();
+    }
 		return next();
 	}catch (e) {
 		console.log('Error on session post remove hook: %s', JSON.stringify(e));

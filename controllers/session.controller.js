@@ -38,21 +38,20 @@ exports.balance = async (req, res, next) => {
  */
 exports.update = async (req, res, next) => {
 	const query = { "_id": req.params.sessId};
-	console.log('updating session id: %s', query);
+	console.log('updating session id: %s', query["_id"]);
   const update = {
     name: req.body.name,
     comment: req.body.comment,
     services: req.body.services,
     owner: req.body.owner,
-    // total: req.body.total,
     rating: req.body.rating,
     customer: req.body.customer,
     state: req.body.state,
     subtotal: req.body.subtotal,
-    // itbms: req.body.itbms,
     isTax: req.body.isTax,
     transactionType: req.body.transactionType,
     discount: req.body.discount,
+    isCrudUpdate: req.body.isCrudUpdate,
   };
   const session = await Session.findById(query);
   if (!session) {
@@ -65,6 +64,7 @@ exports.update = async (req, res, next) => {
   session.owner = update.owner;
   session.isTax = update.isTax;
   session.discount = update.discount;
+  session.isCrudUpdate = update.isCrudUpdate ? update.isCrudUpdate : false;
 
   session.subtotal = await sessionService.recalculatesubTotal(update.services, update.discount);
 

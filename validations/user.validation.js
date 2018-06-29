@@ -14,6 +14,13 @@ module.exports = {
     },
   },
 
+  // GET /api/v1/customers/search
+  listLikeName: {
+    query: {
+      name: Joi.string().regex(/^[a-zA-Z0-9\s]{0,25}$/),
+    }
+  },
+
   // POST /api/v1/users
   createUser: {
     body: {

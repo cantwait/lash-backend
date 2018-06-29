@@ -31,7 +31,10 @@ const balanceSchema = new mongoose.Schema({
     type: Float,
     required: true,
     trim: true
-  }
+  },
+  sessionId: {
+    type: String,
+  },
 }, {
   timestamps: true,
 });

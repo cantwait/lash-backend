@@ -7,7 +7,8 @@ const {
   createUser,
   replaceUser,
   updateUser,
-  resetPwd
+  resetPwd,
+  listLikeName
 } = require('../validations/user.validation')
 
 const router = express.Router()
@@ -74,6 +75,10 @@ router
    * @apiError (Forbidden 403)     Forbidden        Only admins can create the data
    */
   .post(authorize(ADMIN), validate(createUser), controller.create);
+
+router
+  .route('/search')
+    .get(authorize(), validate(listLikeName), controller.listLikeName);
 
 router
   .route('/profile')

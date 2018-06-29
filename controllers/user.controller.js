@@ -96,6 +96,20 @@ exports.sessionsByUser = async (req,res,next) => {
 exports.get = (req, res) => res.json(req.locals.user.transform());
 
 /**
+* Get User list by name (like)
+* @public
+*/
+exports.listLikeName = async (req, res, next) => {
+  try {
+    const users = await User.listLikeName(req.query);
+    const transformedUsers = users.map(user => user.transform());
+    res.json(transformedUsers);
+  } catch (e) {
+    next(e);
+  }
+};
+
+/**
  * Get logged in user info
  * @public
  */

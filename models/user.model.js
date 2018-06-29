@@ -159,6 +159,17 @@ userSchema.statics = {
 
   roles,
 
+
+  listLikeName({name}) {
+    if (!name) {
+      name = '';
+    }
+    return this
+      .find({$text: { $search: name }})
+      .sort({ name: 1 })
+      .exec();
+  },
+
   /**
    * Get user
    *
